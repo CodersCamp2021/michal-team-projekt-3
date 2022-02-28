@@ -9,6 +9,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:jest/recommended',
     'plugin:prettier/recommended',
+    'prettier',
   ],
   env: {
     es2021: true,
@@ -17,6 +18,11 @@ module.exports = {
   },
   plugins: ['prettier', 'jest'],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
 };
