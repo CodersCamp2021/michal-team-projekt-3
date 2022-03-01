@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
       min: 6,
       max: 255,
     },
-    surname: {
+    lastName: {
       type: String,
       required: true,
       min: 6,
@@ -37,31 +37,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    lastOnline: {
-      type: Date,
-      required: false,
-    },
-    //todo: ref do schematu host
-    hostInfo: {
-      responseTime: {
-        type: Date,
-        required: false,
-      },
-      languages: {
-        type: Array,
-        required: false,
-      },
-      rating: {
-        type: Number,
-        required: false,
-      },
-      hostFrom: {
-        type: Date,
-        required: false,
-      },
-    },
-    //todo: ref do schematu reservation
-    reservations: {
+    languages: {
       type: Array,
       required: false,
     },

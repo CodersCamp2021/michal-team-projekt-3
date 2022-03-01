@@ -15,6 +15,8 @@ const objectSchema = new mongoose.Schema(
     localisation: {
       type: String,
       required: true,
+      latitude: Number,
+      longitude: Number,
     },
     amenities: {
       type: Array,
@@ -34,7 +36,7 @@ const objectSchema = new mongoose.Schema(
     },
     images: { type: Array, required: false },
 
-    // todo ref z schematu hosta
+    // todo ref z hosta
     hostInfo: {
       responseTime: {
         type: Date,
@@ -53,7 +55,27 @@ const objectSchema = new mongoose.Schema(
         required: false,
       },
     },
+
+    //todo ref z usera
+
+    photo: {
+      type: String,
+      required: false,
+    },
+
+    name: {
+      type: String,
+      required: true,
+      min: 6,
+      max: 255,
+    },
+
+    languages: {
+      type: Array,
+      required: false,
+    },
   },
+
   { timestamps: true },
 );
 

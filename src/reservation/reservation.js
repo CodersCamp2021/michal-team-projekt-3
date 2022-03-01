@@ -12,7 +12,7 @@ const reservationSchema = new mongoose.Schema(
       min: 6,
       max: 255,
     },
-    lastname: {
+    lastName: {
       type: String,
       required: true,
       min: 6,
@@ -34,14 +34,20 @@ const reservationSchema = new mongoose.Schema(
     localisation: {
       type: String,
       required: true,
+      latitude: Number,
+      longitude: Number,
     },
     price: {
       type: Number,
       required: true,
     },
+    amenities: {
+      type: Array,
+      required: false,
+    },
     image: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   { timestamps: true },
