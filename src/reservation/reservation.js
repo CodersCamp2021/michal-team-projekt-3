@@ -12,7 +12,7 @@ const reservationSchema = new mongoose.Schema(
       min: 6,
       max: 255,
     },
-    surname: {
+    lastname: {
       type: String,
       required: true,
       min: 6,
@@ -34,8 +34,6 @@ const reservationSchema = new mongoose.Schema(
     localisation: {
       type: String,
       required: true,
-      min: 6,
-      max: 255,
     },
     price: {
       type: Number,
