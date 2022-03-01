@@ -32,7 +32,7 @@ const objectSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: false,
+      required: true,
     },
     images: { type: Array, required: false },
 
