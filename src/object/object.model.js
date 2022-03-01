@@ -15,6 +15,8 @@ const objectSchema = new mongoose.Schema(
     localisation: {
       type: String,
       required: true,
+      min: 6,
+      max: 255,
     },
     amenities: {
       type: Array,
