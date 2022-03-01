@@ -8,6 +8,10 @@ const objectSchema = new mongoose.Schema(
       min: 6,
       max: 255,
     },
+    accomodationType: {
+      type: String,
+      required: false,
+    },
     description: {
       type: String,
       required: false,
@@ -54,6 +58,11 @@ const objectSchema = new mongoose.Schema(
         type: Date,
         required: false,
       },
+    },
+
+    lastOnline: {
+      type: String,
+      required: false,
     },
 
     //todo ref z usera

@@ -41,7 +41,14 @@ const userSchema = new mongoose.Schema(
       type: Array,
       required: false,
     },
+
+    //todo ref z reservation
+    reservation: {
+      type: Array,
+      required: false,
+    },
   },
+
   { timestamps: true },
 );
 
