@@ -10,6 +10,15 @@ const userBody = {
   surname: 'kowalski',
   dob: '1994-05-23',
 };
+
+const incorrectUserBody = {
+  email: `example`,
+  password: 'test',
+  name: 'jan',
+  surname: 'kowalski',
+  dob: '1994-05-23',
+};
+
 let token;
 
 describe('auth endpoints', () => {
@@ -26,14 +35,32 @@ describe('auth endpoints', () => {
     expect(res.status).toBe(201);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.message).toBe('string');
+    expect(typeof res.body.token).toBe('string');
     expect(res.body.message).toBe('Registered successfully');
   });
 
-  it('should not allow a POST to /auth/register with incorrect data', async () => {
+  it('should not allow a POST to /auth/register with empty body', async () => {
     const res = await request(app).post('/auth/register').send();
     expect(res.status).toBe(400);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
+  });
+
+  it('should not allow a POST to /auth/register with incorrect data', async () => {
+    const res = await request(app)
+      .post('/auth/register')
+      .send(incorrectUserBody);
+    expect(res.status).toBe(400);
+    expect(typeof res.body).toBe('object');
+    expect(typeof res.body.errors).toBe('object');
+  });
+
+  it('should not allow a POST to /auth/register with existing email', async () => {
+    const res = await request(app).post('/auth/register').send(userBody);
+    expect(res.status).toBe(400);
+    expect(typeof res.body).toBe('object');
+    expect(typeof res.body.errors).toBe('object');
+    expect(res.body.errors[0].msg).toBe('Email already taken');
   });
 
   it('should allow a POST to /auth/login with correct data', async () => {
@@ -43,11 +70,12 @@ describe('auth endpoints', () => {
     expect(res.status).toBe(201);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.message).toBe('string');
+    expect(typeof res.body.token).toBe('string');
     expect(res.body.message).toBe('Logged in successfully');
-    token = res.headers['authorization'];
+    token = res.body.token;
   });
 
-  it('should not allow a POST to /auth/login with empty data', async () => {
+  it('should not allow a POST to /auth/login with empty body', async () => {
     const res = await request(app).post('/auth/login').send();
     expect(res.status).toBe(400);
     expect(typeof res.body).toBe('object');

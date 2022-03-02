@@ -5,8 +5,10 @@ export const signup = async (req, res) => {
   try {
     const user = await new User(req.body);
     await user.save();
+    const token = createToken(user.id);
     return res.status(201).send({
       message: 'Registered successfully',
+      token: `Bearer ${token}`,
     });
   } catch (e) {
     console.error(e);
@@ -24,11 +26,10 @@ export const signin = async (req, res) => {
     if (!isMatch) {
       return res.status(400).send({ message: 'Invalid password' });
     }
-    const token = createToken(user);
+    const token = createToken(user.id);
     return res
-      .header('Authorization', `Bearer ${token}`)
       .status(201)
-      .send({ message: 'Logged in successfully', token });
+      .send({ message: 'Logged in successfully', token: `Bearer ${token}` });
   } catch (e) {
     console.error(e);
     res.status(500).end();
