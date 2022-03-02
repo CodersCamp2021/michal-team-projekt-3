@@ -1,5 +1,5 @@
 import { app } from './app.js';
-import { dbConnection } from './utils/dbConnection.js';
+import { dbConnection } from './helpers/dbConnection.js';
 
 dbConnection()
   .then(() =>

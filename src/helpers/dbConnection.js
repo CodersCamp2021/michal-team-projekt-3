@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const dbUri =
   process.env.NODE_ENV === 'test'
     ? process.env.MONGO_TEST_URL

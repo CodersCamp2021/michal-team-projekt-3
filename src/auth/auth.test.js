@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../app.js';
 import { User } from '../user/user.model.js';
-import { dbConnection, closeConnection } from '../utils/dbConnection.js';
+import { dbConnection, closeConnection } from '../helpers/dbConnection.js';
 
 const userBody = {
   email: `example@test.pl`,
