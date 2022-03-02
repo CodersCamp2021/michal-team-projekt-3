@@ -42,9 +42,29 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
 
-    //todo ref z reservation
+    responseTime: {
+      type: Date,
+      required: false,
+    },
+
+    rating: {
+      type: Number,
+      required: false,
+    },
+
+    hostFrom: {
+      type: Date,
+      required: false,
+    },
+
+    lastOnline: {
+      type: String,
+      required: false,
+    },
+
     reservation: {
-      type: Array,
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'reservation',
       required: false,
     },
   },
