@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { localisationSchema } from '../object/object.model';
 
 const reservationSchema = new mongoose.Schema(
   {
@@ -31,12 +32,7 @@ const reservationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    localisation: {
-      type: String,
-      required: true,
-      latitude: Number,
-      longitude: Number,
-    },
+    localisation: localisationSchema,
     price: {
       type: Number,
       required: true,

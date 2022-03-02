@@ -1,5 +1,22 @@
 import mongoose from 'mongoose';
 
+const localisationSchema = new mongoose.Schema({
+  address: {
+    type: String,
+    minlength: 2,
+    maxlength: 255,
+    required: true,
+  },
+  latitude: {
+    type: Number,
+    required: true,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+  },
+});
+
 const objectSchema = new mongoose.Schema(
   {
     title: {
@@ -16,12 +33,7 @@ const objectSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    localisation: {
-      type: String,
-      required: true,
-      latitude: Number,
-      longitude: Number,
-    },
+    localisation: localisationSchema,
     amenities: {
       type: Array,
       required: false,
