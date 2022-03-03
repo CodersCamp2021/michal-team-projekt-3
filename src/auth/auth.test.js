@@ -7,7 +7,7 @@ const userBody = {
   email: `example@test.pl`,
   password: 's3cur3@pass',
   name: 'jan',
-  surname: 'kowalski',
+  lastName: 'kowalski',
   dob: '1994-05-23',
 };
 
@@ -15,7 +15,7 @@ const incorrectUserBody = {
   email: `example`,
   password: 'test',
   name: 'jan',
-  surname: 'kowalski',
+  lastName: 'kowalski',
   dob: '1994-05-23',
 };
 
