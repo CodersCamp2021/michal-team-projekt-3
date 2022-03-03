@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const objectSchema = new mongoose.Schema(
+const offerSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -53,4 +53,4 @@ const objectSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export const Object = new mongoose.model('object', objectSchema);
+export const Offer = new mongoose.model('offer', offerSchema);

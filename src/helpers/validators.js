@@ -8,7 +8,7 @@ export const registerValidator = [
     .withMessage('Name is required')
     .isLength({ min: 2 })
     .isString(),
-  body('surname')
+  body('lastName')
     .not()
     .isEmpty()
     .withMessage('Surname is required')
@@ -62,7 +62,7 @@ export const loginValidator = [
     .isString(),
 ];
 
-export const objectUpdateValidator = [
+export const offerUpdateValidator = [
   body('title')
     .optional()
     .isLength({ min: 6, max: 255 })
@@ -83,7 +83,7 @@ export const objectUpdateValidator = [
   body('images.*').isURL().withMessage('Invalid image URL format'),
 ];
 
-export const objectCreateValidator = [
+export const offerCreateValidator = [
   body('title').notEmpty().withMessage('Title is required'),
   body('localisation.address').notEmpty().withMessage('Address is required'),
   body('localisation.latitude').notEmpty().withMessage('Latitude is required'),
@@ -92,5 +92,5 @@ export const objectCreateValidator = [
     .withMessage('Longitude is required'),
   body('price').notEmpty().withMessage('Price is required'),
   body('image').notEmpty().withMessage('Image URL is required'),
-  [...objectUpdateValidator],
+  [...offerUpdateValidator],
 ];
