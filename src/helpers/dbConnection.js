@@ -1,21 +1,9 @@
-import mongoose from 'mongoose';
+import * as productionDbConnection from './productionDbConnection';
+import * as testDbConnection from './testDbConnection';
 
-const dbUri =
-  process.env.NODE_ENV === 'test'
-    ? process.env.MONGO_TEST_URL
-    : process.env.MONGO_URL;
+const dbConnection =
+  process.env.NODE_ENV === 'production'
+    ? productionDbConnection
+    : testDbConnection;
 
-export const dbConnection = async () => {
-  try {
-    await mongoose.connect(dbUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-export const closeConnection = () => {
-  return mongoose.disconnect();
-};
+export default dbConnection;
