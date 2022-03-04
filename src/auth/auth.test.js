@@ -1,7 +1,6 @@
 import request from 'supertest';
 import { app } from '../app.js';
-import { User } from '../user/user.model.js';
-import { dbConnection, closeConnection } from '../helpers/dbConnection.js';
+import { connect, disconnect } from '../helpers/testDbConnection.js';
 
 const userBody = {
   email: `example@test.pl`,
@@ -23,11 +22,10 @@ let token;
 
 describe('auth endpoints', () => {
   beforeAll(async () => {
-    await dbConnection();
+    await connect();
   });
   afterAll(async () => {
-    await User.deleteMany({});
-    await closeConnection();
+    await disconnect();
   });
 
   it('should allow a POST to /auth/register with correct data', async () => {
