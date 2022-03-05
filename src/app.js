@@ -5,7 +5,7 @@ import { StartRouter } from './routes/start.js';
 import passport from 'passport';
 import { AuthRouter } from './auth/auth.router.js';
 import { JwtConfig } from './auth/passport.js';
-import { ReservationRouter } from './reservation/reservation.router';
+import { ReservationRouter } from './reservation/reservation.router.js';
 import express from 'express';
 export const app = express();
 

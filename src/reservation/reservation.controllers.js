@@ -1,50 +1,45 @@
-import { Reservation } from './reservation.model';
+import { Reservation } from './reservation.model.js';
 
-export async function makeReservation(req, res) {
+export async function createReservation(req, res) {
   const reservation = new Reservation({
     dateStart: req.body.dateStart,
     dateEnd: req.body.dateEnd,
+    user: req.params.userID,
     object: req.params.objectId,
   });
   try {
-    const saveReservation = await reservation.save();
-    if (!saveReservation) {
-      res.status(400).json({ message: 'Data incorrect' });
-    }
-    return saveReservation;
+    const createdReservation = await reservation.create(req.body);
+    res.status(200).json({ data: createdReservation });
   } catch (error) {
-    res.status(400).json({ message: 'error' });
+    res.status(400).json({ message: 'Could not create reservation' });
   }
 }
 
 export async function getSingleReservationData(req, res) {
+  if (!req.params.id)
+    res.status(400).json({ error: 'Bad request: no ID param' });
   try {
-    const reservationData = await Reservation.findById(
-      req.params.reservationId,
-    );
-    if (!reservationData) {
-      res.status(204).end();
-    } else {
-      return reservationData;
-    }
+    const reservationData = await Reservation.findOneById(req.params.id);
+    res.status(200).json({ data: reservationData });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error });
+    res
+      .status(400)
+      .json({ error: 'Could not find reservation with this specified ID' });
   }
 }
 
 export async function deleteReservation(req, res) {
   //todo - usuń jeżeli jest adminem
+  if (!req.params.id)
+    res.status(400).json({ error: 'Bad request: no ID param' });
   try {
-    const deleteReservation = await Reservation.deleteOne({
-      _id: req.params.reservationId,
-    });
-    if (!deleteReservation) {
-      res.status(404).json({ message: 'no reservation with this ID' });
-    } else {
-      return deleteReservation;
-    }
+    const deletedReservation = await Reservation.findOneByIdAndRemove(
+      req.params.id,
+    );
+    res.status(200).json({ data: deletedReservation });
   } catch (error) {
-    res.status(502).res.json({ message: error });
+    res
+      .status(400)
+      .json({ error: 'Could not remove reservation with the specified ID' });
   }
 }
