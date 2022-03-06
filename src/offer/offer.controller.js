@@ -32,7 +32,7 @@ export const updateOne = async (req, res) => {
   const offer = await Offer.findById(req.params.id);
 
   if (!offer.host.equals(req.user._id) && req.user.role !== USER_ROLE.ADMIN)
-    return res.status(400).json({ message: 'Access denied', errors: [] });
+    return res.status(403).json({ message: 'Access denied', errors: [] });
 
   try {
     const flattenedBody = flatten(req.body);
@@ -59,7 +59,7 @@ export const removeOne = async (req, res) => {
   const offer = await Offer.findById(req.params.id);
 
   if (!offer.host.equals(req.user._id) && req.user.role !== USER_ROLE.ADMIN)
-    return res.status(400).json({ message: 'Access denied', errors: [] });
+    return res.status(403).json({ message: 'Access denied', errors: [] });
 
   try {
     const removedOffer = await Offer.findByIdAndRemove(req.params.id);

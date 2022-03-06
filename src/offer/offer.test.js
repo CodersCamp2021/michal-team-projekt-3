@@ -106,7 +106,7 @@ describe('offer endpoints', () => {
       .post('/offer')
       .set('Authorization', userToken)
       .send(offerBody);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
   });
@@ -158,7 +158,7 @@ describe('offer endpoints', () => {
       .patch(`/offer/${offerID}`)
       .set('Authorization', host2Token)
       .send(offerBody);
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(403);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
   });
@@ -168,7 +168,7 @@ describe('offer endpoints', () => {
       .patch(`/offer/${offerID}`)
       .set('Authorization', userToken)
       .send(offerBody);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
   });
@@ -210,7 +210,7 @@ describe('offer endpoints', () => {
     const res = await request(app)
       .delete(`/offer/${offerID}`)
       .set('Authorization', host2Token);
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(403);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
   });
@@ -219,7 +219,7 @@ describe('offer endpoints', () => {
     const res = await request(app)
       .delete(`/offer/${offerID}`)
       .set('Authorization', userToken);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
   });
