@@ -4,11 +4,11 @@ export async function createReservation(req, res) {
   const reservation = new Reservation({
     dateStart: req.body.dateStart,
     dateEnd: req.body.dateEnd,
-    user: req.params.userID,
-    object: req.params.objectId,
+    user: req.body.user,
+    object: req.body.object,
   });
   try {
-    const createdReservation = await reservation.create(req.body);
+    const createdReservation = await reservation.save(req.body);
     res.status(200).json({ data: createdReservation });
   } catch (error) {
     res.status(400).json({ message: 'Could not create reservation' });

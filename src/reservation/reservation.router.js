@@ -10,12 +10,12 @@ import {
 
 export const ReservationRouter = Router();
 
-ReservationRouter.post('/reservation/:reservationId', createReservation);
+ReservationRouter.post('/', createReservation);
 
-ReservationRouter.get('/reservation', getAllReservations);
+ReservationRouter.get('/', getAllReservations);
 
-ReservationRouter.get('/:reservationId', getSingleReservationData);
+ReservationRouter.get('/:id', getSingleReservationData);
 
-ReservationRouter.patch('/:reservationId', updateReservation);
+ReservationRouter.patch('/:id', updateReservation);
 
-ReservationRouter.delete('/:reservationId', deleteReservation);
+ReservationRouter.delete('/:id', deleteReservation);
