@@ -15,8 +15,6 @@ UserRouter.delete(
 UserRouter.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    roleCheck(req, res, next, [USER_ROLE.ADMIN]);
-  },
+  roleCheck([USER_ROLE.ADMIN]),
   deleteUser,
 );
