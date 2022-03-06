@@ -27,7 +27,6 @@ export const JwtConfig = () => {
 
 export const requireAuth = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, function (err, user, info) {
-    console.log(user);
     if (err || !user?.role) {
       return res.status(401).json({ message: 'Unauthorized', errors: [info] });
     } else {
