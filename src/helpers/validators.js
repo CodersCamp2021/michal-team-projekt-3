@@ -8,10 +8,10 @@ export const registerValidator = [
     .withMessage('Name is required')
     .isLength({ min: 2 })
     .isString(),
-  body('surname')
+  body('lastName')
     .not()
     .isEmpty()
-    .withMessage('Surname is required')
+    .withMessage('lastName is required')
     .isLength({ min: 2 })
     .isString(),
   body('email')
