@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import { USER_ROLE } from '../constants.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -9,7 +10,7 @@ const userSchema = new mongoose.Schema(
       min: 6,
       max: 255,
     },
-    lastName: {
+    surname: {
       type: String,
       required: true,
       min: 6,
@@ -66,6 +67,12 @@ const userSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'reservation',
       required: false,
+    },
+
+    role: {
+      type: String,
+      enum: [USER_ROLE.ADMIN, USER_ROLE.USER, USER_ROLE.HOST],
+      default: USER_ROLE.USER,
     },
   },
 

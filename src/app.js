@@ -7,6 +7,7 @@ import passport from 'passport';
 import { AuthRouter } from './auth/auth.router.js';
 import { JwtConfig } from './auth/passport.js';
 import express from 'express';
+import { UserRouter } from './user/user.router.js';
 export const app = express();
 
 app.use(passport.initialize());
@@ -19,3 +20,4 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', StartRouter);
 app.use('/auth', AuthRouter);
 app.use('/offer', OfferRouter);
+app.use('/user', UserRouter);
