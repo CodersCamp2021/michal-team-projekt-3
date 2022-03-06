@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 
 const offerSchema = new mongoose.Schema(
   {
+    host: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'user',
+      required: true,
+    },
     title: {
       type: String,
       required: true,
