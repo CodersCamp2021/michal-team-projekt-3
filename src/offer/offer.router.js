@@ -13,7 +13,7 @@ import {
   updateOne,
   removeOne,
   createOne,
-} from './Offer.controller.js';
+} from './offer.controller.js';
 export const OfferRouter = Router();
 
 OfferRouter.get('/', getMany);
