@@ -11,7 +11,7 @@ import { UserRouter } from './user/user.router.js';
 export const app = express();
 
 app.use(passport.initialize());
-JwtConfig(passport);
+JwtConfig();
 app.use(cors());
 app.use(morgan('tiny'));
 app.use(express.json());

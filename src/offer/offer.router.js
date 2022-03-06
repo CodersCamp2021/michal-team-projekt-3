@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import passport from 'passport';
+import { requireAuth } from '../auth/passport.js';
 import { roleCheck } from '../middlewares/roleCheck.js';
 import { USER_ROLE } from '../constants.js';
 import {
@@ -19,7 +19,7 @@ export const OfferRouter = Router();
 OfferRouter.get('/', getMany);
 OfferRouter.post(
   '/',
-  passport.authenticate('jwt', { session: false }),
+  requireAuth,
   roleCheck([USER_ROLE.ADMIN, USER_ROLE.HOST]),
   [offerCreateValidator, verifyFieldsErrors],
   createOne,
@@ -27,14 +27,14 @@ OfferRouter.post(
 OfferRouter.get('/:id', getOne);
 OfferRouter.patch(
   '/:id',
-  passport.authenticate('jwt', { session: false }),
+  requireAuth,
   roleCheck([USER_ROLE.ADMIN, USER_ROLE.HOST]),
   [offerUpdateValidator, verifyFieldsErrors],
   updateOne,
 );
 OfferRouter.delete(
   '/:id',
-  passport.authenticate('jwt', { session: false }),
+  requireAuth,
   roleCheck([USER_ROLE.ADMIN, USER_ROLE.HOST]),
   removeOne,
 );

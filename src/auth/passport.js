@@ -1,7 +1,8 @@
 import { Strategy, ExtractJwt } from 'passport-jwt';
+import passport from 'passport';
 import { User } from '../user/user.model.js';
 
-export const JwtConfig = (passport) => {
+export const JwtConfig = () => {
   const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET,
@@ -22,4 +23,16 @@ export const JwtConfig = (passport) => {
     });
 
   passport.use(JwtStrategy());
+};
+
+export const requireAuth = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, function (err, user, info) {
+    console.log(user);
+    if (err || !user?.role) {
+      return res.status(401).json({ message: 'Unauthorized', errors: [info] });
+    } else {
+      req.user = user;
+      return next();
+    }
+  })(req, res, next);
 };
