@@ -11,7 +11,7 @@ export const JwtConfig = () => {
   const JwtStrategy = () =>
     new Strategy(options, async (payload, done) => {
       try {
-        const user = await User.findOne({ id: payload.id });
+        const user = await User.findOne({ _id: payload.id });
         if (user) {
           return done(null, user);
         } else {
