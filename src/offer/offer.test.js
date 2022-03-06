@@ -1,5 +1,3 @@
-// TODO: Fix user authentication and reenable tests
-/* eslint jest/no-disabled-tests: "off" */
 import request from 'supertest';
 import { app } from '../app.js';
 import { USER_ROLE } from '../constants.js';
@@ -103,7 +101,7 @@ describe('offer endpoints', () => {
     expect(typeof res.body.errors).toBe('object');
   });
 
-  it.skip('should not allow a POST to /offer when unauthorized (insufficient role)', async () => {
+  it('should not allow a POST to /offer when unauthorized (insufficient role)', async () => {
     const res = await request(app)
       .post('/offer')
       .set('Authorization', userToken)
@@ -127,17 +125,17 @@ describe('offer endpoints', () => {
     const res = await request(app)
       .patch(`/offer/${offerID}`)
       .set('Authorization', host1Token)
-      .send({ title: offerBody.title });
+      .send({ title: 'testPatchTitle' });
     expect(res.status).toBe(200);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.data).toBe('object');
     expect(res.body.data).toMatchObject({
       ...offerBody,
-      title: offerBody.title,
+      title: 'testPatchTitle',
     });
   });
 
-  it.skip('should allow a PATCH to /offer/:id when authorized (admin)', async () => {
+  it('should allow a PATCH to /offer/:id when authorized (admin)', async () => {
     const res = await request(app)
       .patch(`/offer/${offerID}`)
       .set('Authorization', adminToken)
@@ -155,17 +153,17 @@ describe('offer endpoints', () => {
     expect(typeof res.body.errors).toBe('object');
   });
 
-  it.skip('should not allow a PATCH to /offer/:id when unauthorized (different host)', async () => {
+  it('should not allow a PATCH to /offer/:id when unauthorized (different host)', async () => {
     const res = await request(app)
       .patch(`/offer/${offerID}`)
       .set('Authorization', host2Token)
       .send(offerBody);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(400);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
   });
 
-  it.skip('should not allow a PATCH to /offer/:id when unauthorized (different user)', async () => {
+  it('should not allow a PATCH to /offer/:id when unauthorized (different user)', async () => {
     const res = await request(app)
       .patch(`/offer/${offerID}`)
       .set('Authorization', userToken)
@@ -208,7 +206,7 @@ describe('offer endpoints', () => {
     expect(typeof res.body.errors).toBe('object');
   });
 
-  it.skip('should not allow a DELETE to /offer when unauthorized (different host)', async () => {
+  it('should not allow a DELETE to /offer when unauthorized (different host)', async () => {
     const res = await request(app)
       .delete(`/offer/${offerID}`)
       .set('Authorization', host2Token);
@@ -217,11 +215,11 @@ describe('offer endpoints', () => {
     expect(typeof res.body.errors).toBe('object');
   });
 
-  it.skip('should not allow a DELETE to /offer when unauthorized (different user)', async () => {
+  it('should not allow a DELETE to /offer when unauthorized (different user)', async () => {
     const res = await request(app)
       .delete(`/offer/${offerID}`)
       .set('Authorization', userToken);
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.errors).toBe('object');
   });
