@@ -1,4 +1,7 @@
 import { Router } from 'express';
+import passport from 'passport';
+import { USER_ROLE } from '../constants.js';
+import { roleCheck } from '../middlewares/roleCheck.js';
 
 import {
   createReservation,
@@ -10,12 +13,30 @@ import {
 
 export const ReservationRouter = Router();
 
-ReservationRouter.post('/', createReservation);
+ReservationRouter.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  createReservation,
+);
 
-ReservationRouter.get('/', getAllReservations);
+ReservationRouter.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    roleCheck(req, res, next, [USER_ROLE.ADMIN]);
+  },
+  getAllReservations,
+);
 
 ReservationRouter.get('/:id', getSingleReservationData);
 
 ReservationRouter.patch('/:id', updateReservation);
 
-ReservationRouter.delete('/:id', deleteReservation);
+ReservationRouter.delete(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    roleCheck(req, res, next, [USER_ROLE.ADMIN]);
+  },
+  deleteReservation,
+);

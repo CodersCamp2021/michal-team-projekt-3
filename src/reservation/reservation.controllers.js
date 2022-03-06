@@ -4,7 +4,6 @@ export async function createReservation(req, res) {
   const reservation = new Reservation({
     dateStart: req.body.dateStart,
     dateEnd: req.body.dateEnd,
-    user: req.body.user,
     object: req.body.object,
   });
   try {
@@ -51,7 +50,6 @@ export async function getAllReservations(req, res) {
 }
 
 export async function deleteReservation(req, res) {
-  //todo - usuń jeżeli jest adminem
   if (!req.params.id)
     res.status(400).json({ error: 'Bad request: no ID param' });
   try {
