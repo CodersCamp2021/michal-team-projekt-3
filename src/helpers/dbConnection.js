@@ -1,5 +1,5 @@
-import * as productionDbConnection from './productionDbConnection';
-import * as testDbConnection from './testDbConnection';
+import * as productionDbConnection from './productionDbConnection.js';
+import * as testDbConnection from './testDbConnection.js';
 
 const dbConnection =
   process.env.NODE_ENV === 'production'
