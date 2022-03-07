@@ -61,3 +61,36 @@ export const loginValidator = [
     .isLength({ min: 8 })
     .isString(),
 ];
+
+export const offerUpdateValidator = [
+  body('title')
+    .optional()
+    .isLength({ min: 6, max: 255 })
+    .withMessage('Invalid title length'),
+  body('accomodationType').optional().isString(),
+  body('description').optional().isString(),
+  body('localisation.address')
+    .optional()
+    .isString()
+    .isLength({ min: 2, max: 255 }),
+  body('localisation.latitude').optional().isNumeric(),
+  body('localisation.longitude').optional().isNumeric(),
+  body('amenities').optional().isArray(),
+  body('price').optional().isNumeric(),
+  body('oldPrice').optional().isNumeric(),
+  body('image').optional().isURL().withMessage('Invalid image URL format'),
+  body('images').optional().isArray(),
+  body('images.*').isURL().withMessage('Invalid image URL format'),
+];
+
+export const offerCreateValidator = [
+  body('title').notEmpty().withMessage('Title is required'),
+  body('localisation.address').notEmpty().withMessage('Address is required'),
+  body('localisation.latitude').notEmpty().withMessage('Latitude is required'),
+  body('localisation.longitude')
+    .notEmpty()
+    .withMessage('Longitude is required'),
+  body('price').notEmpty().withMessage('Price is required'),
+  body('image').notEmpty().withMessage('Image URL is required'),
+  [...offerUpdateValidator],
+];
