@@ -30,7 +30,7 @@ const adminBody = {
   role: USER_ROLE.ADMIN,
 };
 
-let userToken, adminToken, host, user;
+let users, userToken, adminToken, host, user;
 
 const registerUsers = async () => {
   await request(app).post('/auth/register').send(hostBody);
@@ -41,8 +41,8 @@ const registerUsers = async () => {
 };
 
 const getUsersData = async (token) => {
-  const users = (await request(app).get('/user').set('Authorization', token))
-    .body.data;
+  users = (await request(app).get('/user').set('Authorization', token)).body
+    .data;
   host = users[0];
   user = users[1];
 };
@@ -67,6 +67,7 @@ describe('user endpoints', () => {
       expect(res.status).toBe(200);
       expect(typeof res.body).toBe('object');
       expect(typeof res.body.data).toBe('object');
+      expect(res.body.data).toStrictEqual(users);
     });
 
     it('should allow a GET to /user/:id when authorized and admin role', async () => {
@@ -77,9 +78,7 @@ describe('user endpoints', () => {
       expect(res.status).toBe(200);
       expect(typeof res.body).toBe('object');
       expect(typeof res.body.data).toBe('object');
-      expect(res.body.data._id).toBe(host._id);
-      expect(res.body.data.name).toBe(hostBody.name);
-      expect(res.body.data.email).toBe(hostBody.email);
+      expect(res.body.data).toStrictEqual(host);
     });
 
     it('should allow a PATCH to /user/:id when authorized and admin role', async () => {
@@ -91,9 +90,7 @@ describe('user endpoints', () => {
       expect(res.status).toBe(200);
       expect(typeof res.body).toBe('object');
       expect(typeof res.body.data).toBe('object');
-      expect(res.body.data._id).toBe(host._id);
-      expect(res.body.data.name).toBe('testUserName');
-      expect(res.body.data.email).toBe(hostBody.email);
+      expect(res.body.data).toStrictEqual({ ...host, name: 'testUserName' });
     });
 
     it('should allow a DELETE to /user/:id when authorized and admin role', async () => {
