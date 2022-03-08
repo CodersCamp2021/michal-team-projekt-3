@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { PAYMENT_METHOD } from '../constants';
 
 const reservationSchema = new mongoose.Schema(
   {
@@ -11,7 +12,15 @@ const reservationSchema = new mongoose.Schema(
       required: true,
     },
     message: { type: String, required: false },
-    payment: { type: Array, required: true },
+    payment: {
+      type: String,
+      enum: [
+        PAYMENT_METHOD.PAYPAL,
+        PAYMENT_METHOD.CREDIT_CARD,
+        PAYMENT_METHOD.PAYING_ON_PLACE,
+      ],
+      required: true,
+    },
     contact: { type: String, required: true },
     price: { type: Number, required: false },
   },
