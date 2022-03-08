@@ -13,6 +13,7 @@ const reservationSchema = new mongoose.Schema(
     message: { type: String, required: false },
     payment: { type: Array, required: true },
     contact: { type: String, required: true },
+    price: { type: Number, required: false },
   },
   { timestamps: true },
 );

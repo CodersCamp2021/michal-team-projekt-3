@@ -9,6 +9,7 @@ export async function createReservation(req, res) {
     message: req.body.message,
     payment: req.body.payment,
     contact: req.body.contact,
+    price: req.body.price,
   });
   try {
     const createdReservation = await reservation.save();
