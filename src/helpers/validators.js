@@ -94,3 +94,31 @@ export const offerCreateValidator = [
   body('image').notEmpty().withMessage('Image URL is required'),
   [...offerUpdateValidator],
 ];
+
+export const userUpdateValidator = [
+  body().custom((body) => {
+    const allowedKeys = [
+      'name',
+      'lastName',
+      'email',
+      'password',
+      'photo',
+      'languages',
+    ];
+    for (const key of Object.keys(body)) {
+      if (!allowedKeys.includes(key)) {
+        throw new Error(`Not allowed property: ${key}`);
+      }
+    }
+    return true;
+  }),
+  body('name').optional({ nullable: true }).isLength({ min: 2 }).isString(),
+  body('lastName').optional({ nullable: true }).isLength({ min: 2 }).isString(),
+  body('email')
+    .optional({ nullable: true })
+    .isEmail()
+    .withMessage('Invalid email'),
+  body('password').optional({ nullable: true }).isLength({ min: 8 }).isString(),
+  body('photo').optional().isURL().withMessage('Invalid image URL format'),
+  body('languages').optional({ nullable: true }),
+];
