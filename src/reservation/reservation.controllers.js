@@ -4,7 +4,11 @@ export async function createReservation(req, res) {
   const reservation = new Reservation({
     dateStart: req.body.dateStart,
     dateEnd: req.body.dateEnd,
-    object: req.body.object,
+    object: req.body.objectId,
+    user: req.user._id,
+    message: req.body.message,
+    payment: req.body.payment,
+    contact: req.body.contact,
   });
   try {
     const createdReservation = await reservation.save();

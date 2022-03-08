@@ -10,6 +10,9 @@ const reservationSchema = new mongoose.Schema(
       ref: 'object',
       required: true,
     },
+    message: { type: String, required: false },
+    payment: { type: Array, required: true },
+    contact: { type: String, required: true },
   },
   { timestamps: true },
 );
