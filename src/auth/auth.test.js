@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { app } from '../app.js';
-import { connect, disconnect } from '../helpers/testDbConnection.js';
+import dbConnection from '../helpers/dbConnection.js';
 
 const userBody = {
   email: `example@test.pl`,
@@ -22,10 +22,10 @@ let token;
 
 describe('auth endpoints', () => {
   beforeAll(async () => {
-    await connect();
+    await dbConnection.connect();
   });
   afterAll(async () => {
-    await disconnect();
+    await dbConnection.disconnect();
   });
 
   it('should allow a POST to /auth/register with correct data', async () => {

@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
 
-const objectSchema = new mongoose.Schema(
+const offerSchema = new mongoose.Schema(
   {
+    host: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'user',
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -53,4 +58,4 @@ const objectSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export const Object = new mongoose.model('object', objectSchema);
+export const Offer = new mongoose.model('offer', offerSchema);
