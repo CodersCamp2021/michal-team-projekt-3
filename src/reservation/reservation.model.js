@@ -21,7 +21,17 @@ const reservationSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    contact: { type: String, required: true },
+    contact: {
+      name: {
+        type: String,
+        required: true,
+        min: 6,
+        max: 255,
+      },
+      lastName: { type: String, required: true, min: 6, max: 255 },
+      email: { type: String, trim: true, required: true, min: 6, max: 255 },
+      phone: { type: Number, required: true },
+    },
     price: { type: Number, required: false },
   },
   { timestamps: true },
