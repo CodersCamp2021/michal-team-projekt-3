@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { PAYMENT_METHOD } from '../constants';
+import { PAYMENT_METHOD } from '../constants.js';
 
 const reservationSchema = new mongoose.Schema(
   {
