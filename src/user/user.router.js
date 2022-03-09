@@ -12,18 +12,22 @@ import {
   getUsers,
   updateMe,
   updateUser,
+  forgotPassword,
+  resetPassword,
 } from './user.controller.js';
 
 export const UserRouter = Router();
 
+UserRouter.patch('/forgotPassword', forgotPassword);
+UserRouter.patch('/resetPassword', resetPassword);
+
 UserRouter.use(requireAuth);
+UserRouter.delete('/me', requireAuth, deleteMe);
 
 UserRouter.route('/').get(roleCheck([USER_ROLE.ADMIN]), getUsers);
-
 UserRouter.route('/me')
   .get(getMe)
   .patch([userUpdateValidator, verifyFieldsErrors], updateMe)
   .delete(deleteMe);
-
 UserRouter.use(roleCheck([USER_ROLE.ADMIN]));
 UserRouter.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser);

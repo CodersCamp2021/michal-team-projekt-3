@@ -1,5 +1,8 @@
+import { createToken, verifyToken } from '../auth/jwt.service.js';
 import { User } from './user.model.js';
 import flatten from 'flat';
+import { mailer } from '../helpers/nodemailer.js';
+import { templateGenrator } from '../templateEmail/templateEmail.js';
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
@@ -97,4 +100,60 @@ export const updateUser = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ errors: [error.message] });
   }
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res
+      .status(400)
+      .json({ message: 'User with this email does not exist.' });
+  }
+
+  const resetToken = createToken(user._id, '15m');
+  await user.updateOne({ resetToken: resetToken });
+
+  const htmlTemplate = templateGenrator(
+    'Reset your password!',
+    'Need to reset your password? No problem! Just click the button below and you will be on your way. If you did not make this request, please ignore this email.',
+    `${process.env.FE_URL}/reset-password?resetId=${resetToken}`,
+  );
+
+  const mailData = {
+    from: `"Bking" <noreply.bking@gmail.com>`,
+    to: 'arol93@op.pl',
+    subject: 'Reset your password',
+    html: htmlTemplate,
+  };
+
+  try {
+    await mailer.sendMail(mailData);
+    return res
+      .status(200)
+      .json({ message: 'Email has been sent, fallow the instructions!' });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ message: 'Something went wrong :(', errors: [error.message] });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { password, resetToken } = req.body;
+
+  const isCorrectToken = verifyToken(resetToken);
+  if (!isCorrectToken) {
+    return res.status(401).json({ message: 'Your token is expired.' });
+  }
+
+  const user = await User.findOne({ resetToken });
+  if (!user) {
+    return res.status(400).json({ message: 'User does not exist.' });
+  }
+  await user.updateOne({ password: password, resetToken: '' });
+  return res.status(200).json({
+    message: 'Your password has been successfully changed. You can login now.',
+  });
 };
