@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema(
     dob: {
       type: Date,
       required: true,
+      immutable: true,
     },
     photo: {
       type: String,
@@ -111,7 +112,6 @@ userSchema.methods.comparePassword = async function (password) {
 
 userSchema.statics.selectFields = function (user) {
   const userObject = user?.toObject();
-  /*eslint no-unused-vars: ["error", { "ignoreRestSiblings": true }]*/
   const { createdAt, updatedAt, password, ...restUserData } = userObject;
   return restUserData;
 };

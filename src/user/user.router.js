@@ -25,7 +25,5 @@ UserRouter.route('/me')
   .patch([userUpdateValidator, verifyFieldsErrors], updateMe)
   .delete(deleteMe);
 
-UserRouter.route('/:id')
-  .get(roleCheck([USER_ROLE.ADMIN]), getUserById)
-  .patch(roleCheck([USER_ROLE.ADMIN]), updateUser)
-  .delete(roleCheck([USER_ROLE.ADMIN]), deleteUser);
+UserRouter.use(roleCheck([USER_ROLE.ADMIN]));
+UserRouter.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser);
