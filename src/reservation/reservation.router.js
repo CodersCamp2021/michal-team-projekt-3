@@ -9,6 +9,7 @@ import {
   deleteReservation,
   getAllReservations,
   updateReservation,
+  getAllUserReservations,
 } from '../reservation/reservation.controllers.js';
 
 export const ReservationRouter = Router();
@@ -21,6 +22,8 @@ ReservationRouter.get(
   roleCheck([USER_ROLE.ADMIN]),
   getAllReservations,
 );
+
+ReservationRouter.get('/:id', requireAuth, getAllUserReservations);
 
 ReservationRouter.get('/:id', requireAuth, getSingleReservationData);
 

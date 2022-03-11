@@ -58,6 +58,18 @@ export async function getAllReservations(req, res) {
   res.status(200).json({ data: reservations });
 }
 
+export async function getAllUserReservations(req, res) {
+  try {
+    const getAllUserReservations = await Reservation.find(req.user._id);
+    res.status(200).json({ data: getAllUserReservations });
+  } catch (error) {
+    res.status(400).json({
+      message: 'Could not find reservation for user with this ID',
+      error: [error],
+    });
+  }
+}
+
 export async function deleteReservation(req, res) {
   if (!req.params.id)
     res.status(400).json({ message: 'Bad request: no ID param', errors: [] });
