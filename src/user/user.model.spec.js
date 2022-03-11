@@ -50,6 +50,7 @@ describe('User model', () => {
       expect(dob).toEqual({
         type: Date,
         required: true,
+        immutable: true,
       });
     });
 
