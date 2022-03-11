@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import { USER_ROLE } from '../constants.js';
+import { passwordHash } from '../helpers/passwordHash.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -33,6 +34,7 @@ const userSchema = new mongoose.Schema(
     dob: {
       type: Date,
       required: true,
+      immutable: true,
     },
     photo: {
       type: String,
@@ -42,40 +44,39 @@ const userSchema = new mongoose.Schema(
       type: Array,
       required: false,
     },
-
     responseTime: {
       type: Date,
       required: false,
     },
-
     rating: {
       type: Number,
       required: false,
     },
-
     hostFrom: {
       type: Date,
       required: false,
     },
-
     lastOnline: {
       type: String,
       required: false,
     },
-
     reservation: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'reservation',
       required: false,
     },
-
     role: {
       type: String,
       enum: [USER_ROLE.ADMIN, USER_ROLE.USER, USER_ROLE.HOST],
       default: USER_ROLE.USER,
+      required: true,
+    },
+    resetToken: {
+      type: String,
+      default: '',
+      required: false,
     },
   },
-
   { timestamps: true },
 );
 
@@ -83,15 +84,40 @@ userSchema.pre('save', async function (next) {
   const user = this;
   if (this.isModified('password') || this.isNew) {
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(user.password, salt);
-      user.password = hash;
+      user.password = passwordHash(user.password);
       next();
     } catch (e) {
       next(e);
     }
   } else {
+    next();
+  }
+});
+
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const user = this;
+  if (user._update.password) {
+    try {
+      this._update.password = passwordHash(user._update.password);
+      next();
+    } catch (e) {
+      return next(e);
+    }
+  } else {
+    next();
+  }
+});
+
+userSchema.pre('updateOne', async function (next) {
+  const password = await this.getUpdate().password;
+  if (!password) {
     return next();
+  }
+  try {
+    this.getUpdate().password = passwordHash(password);
+    next();
+  } catch (error) {
+    return next(error);
   }
 });
 
@@ -99,6 +125,12 @@ userSchema.methods.comparePassword = async function (password) {
   const isMatch = await bcrypt.compare(password, this.password);
   if (isMatch) return true;
   return false;
+};
+
+userSchema.statics.selectFields = function (user) {
+  const userObject = user?.toObject();
+  const { createdAt, updatedAt, password, ...restUserData } = userObject;
+  return restUserData;
 };
 
 export const User = mongoose.model('user', userSchema);
