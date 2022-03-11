@@ -22,9 +22,9 @@ ReservationRouter.get(
   getAllReservations,
 );
 
-ReservationRouter.get('/:id', getSingleReservationData);
+ReservationRouter.get('/:id', requireAuth, getSingleReservationData);
 
-ReservationRouter.patch('/:id', updateReservation);
+ReservationRouter.patch('/:id', requireAuth, updateReservation);
 
 ReservationRouter.delete(
   '/:id',
