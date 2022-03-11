@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import { USER_ROLE } from '../constants.js';
+import { passwordHash } from '../helpers/passwordHash.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -70,6 +71,11 @@ const userSchema = new mongoose.Schema(
       default: USER_ROLE.USER,
       required: true,
     },
+    resetToken: {
+      type: String,
+      default: '',
+      required: false,
+    },
   },
   { timestamps: true },
 );
@@ -78,9 +84,8 @@ userSchema.pre('save', async function (next) {
   const user = this;
   if (this.isModified('password') || this.isNew) {
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(user.password, salt);
-      user.password = hashed;
+      user.password = passwordHash(user.password);
+      next();
     } catch (e) {
       next(e);
     }
@@ -93,14 +98,26 @@ userSchema.pre('findOneAndUpdate', async function (next) {
   const user = this;
   if (user._update.password) {
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(user._update.password, salt);
-      this._update.password = hashed;
+      this._update.password = passwordHash(user._update.password);
+      next();
     } catch (e) {
       return next(e);
     }
   } else {
     next();
+  }
+});
+
+userSchema.pre('updateOne', async function (next) {
+  const password = await this.getUpdate().password;
+  if (!password) {
+    return next();
+  }
+  try {
+    this.getUpdate().password = passwordHash(password);
+    next();
+  } catch (error) {
+    return next(error);
   }
 });
 
