@@ -30,6 +30,7 @@ const userBody = {
   lastName: 'userowski',
   dob: '1994-05-23',
   role: USER_ROLE.USER,
+  isActive: true,
 };
 
 const host1Body = {
@@ -39,6 +40,7 @@ const host1Body = {
   lastName: 'pierwszy',
   dob: '1994-05-23',
   role: USER_ROLE.HOST,
+  isActive: true,
 };
 
 const host2Body = {
@@ -48,6 +50,7 @@ const host2Body = {
   lastName: 'drugi',
   dob: '1994-05-23',
   role: USER_ROLE.HOST,
+  isActive: true,
 };
 
 const adminBody = {
@@ -57,18 +60,23 @@ const adminBody = {
   lastName: 'adminowski',
   dob: '1994-05-23',
   role: USER_ROLE.ADMIN,
+  isActive: true,
 };
 
 let userToken, host1Token, host2Token, adminToken, offerID;
 
 const registerUsers = async () => {
-  host1Token = (await request(app).post('/auth/register').send(host1Body)).body
+  await request(app).post('/auth/register').send(host1Body);
+  host1Token = (await request(app).post('/auth/login').send(host1Body)).body
     .token;
-  host2Token = (await request(app).post('/auth/register').send(host2Body)).body
+  await request(app).post('/auth/register').send(host2Body);
+  host2Token = (await request(app).post('/auth/login').send(host2Body)).body
     .token;
-  userToken = (await request(app).post('/auth/register').send(userBody)).body
+  await request(app).post('/auth/register').send(userBody);
+  userToken = (await request(app).post('/auth/login').send(userBody)).body
     .token;
-  adminToken = (await request(app).post('/auth/register').send(adminBody)).body
+  await request(app).post('/auth/register').send(adminBody);
+  adminToken = (await request(app).post('/auth/login').send(adminBody)).body
     .token;
 };
 

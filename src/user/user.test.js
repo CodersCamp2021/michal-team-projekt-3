@@ -10,6 +10,7 @@ const userBody = {
   lastName: 'userowski',
   dob: '1994-05-23',
   role: USER_ROLE.USER,
+  isActive: true,
 };
 
 const hostBody = {
@@ -19,6 +20,7 @@ const hostBody = {
   lastName: 'hostowski',
   dob: '1994-05-23',
   role: USER_ROLE.HOST,
+  isActive: true,
 };
 
 const adminBody = {
@@ -28,15 +30,18 @@ const adminBody = {
   lastName: 'adminowski',
   dob: '1994-05-23',
   role: USER_ROLE.ADMIN,
+  isActive: true,
 };
 
 let users, userToken, adminToken, host, user;
 
 const registerUsers = async () => {
   await request(app).post('/auth/register').send(hostBody);
-  userToken = (await request(app).post('/auth/register').send(userBody)).body
+  await request(app).post('/auth/register').send(userBody);
+  userToken = (await request(app).post('/auth/login').send(userBody)).body
     .token;
-  adminToken = (await request(app).post('/auth/register').send(adminBody)).body
+  await request(app).post('/auth/register').send(adminBody);
+  adminToken = (await request(app).post('/auth/login').send(adminBody)).body
     .token;
 };
 
@@ -147,50 +152,41 @@ describe('user endpoints', () => {
       const res = await request(app)
         .get('/user')
         .set('Authorization', userToken);
-
       expect(res.status).toBe(403);
       expect(typeof res.body).toBe('object');
       expect(res.body.message).toBe('Access denied.');
     });
-
     it('should not allow a GET to /user/:id when authorized but insufficient role', async () => {
       const res = await request(app)
         .get(`/user/${host._id}`)
         .set('Authorization', userToken);
-
       expect(res.status).toBe(403);
       expect(typeof res.body).toBe('object');
       expect(res.body.message).toBe('Access denied.');
     });
-
     it('should allow a GET to /user/me when authorized', async () => {
       const res = await request(app)
         .get(`/user/me`)
         .set('Authorization', userToken);
-
       expect(res.status).toBe(200);
       expect(typeof res.body).toBe('object');
       expect(typeof res.body.data).toBe('object');
       expect(res.body.data).toStrictEqual(user);
     });
-
     it('should allow a PATCH to /user/me when authorized', async () => {
       const res = await request(app)
         .patch(`/user/me`)
         .send({ name: 'superName' })
         .set('Authorization', userToken);
-
       expect(res.status).toBe(200);
       expect(typeof res.body).toBe('object');
       expect(typeof res.body.data).toBe('object');
       expect(res.body.data).toStrictEqual({ ...user, name: 'superName' });
     });
-
     it('should allow a DELETE to /user/me when authorized', async () => {
       const res = await request(app)
         .delete(`/user/me`)
         .set('Authorization', userToken);
-
       expect(res.status).toBe(200);
       expect(typeof res.body).toBe('object');
       expect(res.body.message).toBe(
