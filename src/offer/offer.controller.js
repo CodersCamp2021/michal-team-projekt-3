@@ -1,6 +1,7 @@
 import { Offer } from './offer.model.js';
 import flatten from 'flat';
 import { USER_ROLE } from '../constants.js';
+import { setHostRole } from '../user/user.controller.js';
 
 export const getMany = async (req, res) => {
   const offers = await Offer.find({});
@@ -74,9 +75,14 @@ export const removeOne = async (req, res) => {
 
 export const createOne = async (req, res) => {
   try {
+    const userId = req.user._id;
+    const isUserOffersExists = await userOffersExists(userId);
+    if (!isUserOffersExists) {
+      await setHostRole(userId);
+    }
     const createdOffer = await Offer.create({
       ...req.body,
-      host: req.user._id,
+      host: userId,
     });
     res.status(200).json({ data: createdOffer });
   } catch (error) {
@@ -84,4 +90,10 @@ export const createOne = async (req, res) => {
       .status(400)
       .json({ message: 'Could not create offer', errors: [error] });
   }
+};
+
+export const userOffersExists = async (userId) => {
+  const offers = await Offer.find({ host: userId });
+  if (!offers.length) return false;
+  return true;
 };

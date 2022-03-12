@@ -20,7 +20,6 @@ OfferRouter.get('/', getMany);
 OfferRouter.post(
   '/',
   requireAuth,
-  roleCheck([USER_ROLE.ADMIN, USER_ROLE.HOST]),
   [offerCreateValidator, verifyFieldsErrors],
   createOne,
 );
