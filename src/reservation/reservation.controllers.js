@@ -60,7 +60,9 @@ export async function getAllReservations(req, res) {
 
 export async function getAllUserReservations(req, res) {
   try {
-    const getAllUserReservations = await Reservation.find(req.user._id);
+    const getAllUserReservations = await Reservation.find({
+      user: req.user._id,
+    });
     res.status(200).json({ data: getAllUserReservations });
   } catch (error) {
     res.status(400).json({
