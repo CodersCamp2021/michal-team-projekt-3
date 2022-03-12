@@ -20,6 +20,12 @@ const incorrectUserBody = {
   isActive: false,
 };
 
+jest.mock('nodemailer', () => ({
+  createTransport: jest.fn().mockReturnValue({
+    sendMail: jest.fn().mockReturnValue(() => {}),
+  }),
+}));
+
 describe('auth endpoints', () => {
   beforeAll(async () => {
     await dbConnection.connect();
