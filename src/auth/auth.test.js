@@ -8,6 +8,7 @@ const userBody = {
   name: 'jan',
   lastName: 'kowalski',
   dob: '1994-05-23',
+  isActive: true,
 };
 
 const incorrectUserBody = {
@@ -16,9 +17,8 @@ const incorrectUserBody = {
   name: 'jan',
   lastName: 'kowalski',
   dob: '1994-05-23',
+  isActive: false,
 };
-
-let token;
 
 describe('auth endpoints', () => {
   beforeAll(async () => {
@@ -33,8 +33,9 @@ describe('auth endpoints', () => {
     expect(res.status).toBe(201);
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.message).toBe('string');
-    expect(typeof res.body.token).toBe('string');
-    expect(res.body.message).toBe('Registered successfully');
+    expect(res.body.message).toBe(
+      'Your account has been successfully created. Go to your email and click the activation button.',
+    );
   });
 
   it('should not allow a POST to /auth/register with empty body', async () => {
@@ -70,7 +71,6 @@ describe('auth endpoints', () => {
     expect(typeof res.body.message).toBe('string');
     expect(typeof res.body.token).toBe('string');
     expect(res.body.message).toBe('Logged in successfully');
-    token = res.body.token;
   });
 
   it('should not allow a POST to /auth/login with empty body', async () => {
@@ -98,21 +98,5 @@ describe('auth endpoints', () => {
     expect(typeof res.body).toBe('object');
     expect(typeof res.body.message).toBe('string');
     expect(res.body.message).toBe('Invalid email or password');
-  });
-
-  it('should allow a GET to /auth/protected with access token', async () => {
-    const res = await request(app)
-      .get('/auth/protected')
-      .set('Authorization', token);
-
-    expect(res.status).toEqual(200);
-    expect(typeof res.body).toBe('object');
-    expect(typeof res.body.message).toBe('string');
-    expect(res.body.message).toEqual('protected route');
-  });
-
-  it('should not allow a GET to /auth/protected without access token', async () => {
-    const res = await request(app).get('/auth/protected');
-    expect(res.status).toEqual(401);
   });
 });

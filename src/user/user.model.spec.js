@@ -110,5 +110,32 @@ describe('User model', () => {
         required: false,
       });
     });
+
+    test('resetToken', () => {
+      const resetToken = User.schema.obj.resetToken;
+      expect(resetToken).toEqual({
+        type: String,
+        default: '',
+        required: false,
+      });
+    });
+
+    test('activateToken', () => {
+      const activateToken = User.schema.obj.activateToken;
+      expect(activateToken).toEqual({
+        type: String,
+        default: '',
+        required: false,
+      });
+    });
+
+    test('isActive', () => {
+      const isActive = User.schema.obj.isActive;
+      expect(isActive).toEqual({
+        type: Boolean,
+        default: false,
+        required: true,
+      });
+    });
   });
 });

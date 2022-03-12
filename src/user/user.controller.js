@@ -123,7 +123,7 @@ export const forgotPassword = async (req, res) => {
 
   const mailData = {
     from: `"Bking" <noreply.bking@gmail.com>`,
-    to: 'arol93@op.pl',
+    to: email,
     subject: 'Reset your password',
     html: htmlTemplate,
   };

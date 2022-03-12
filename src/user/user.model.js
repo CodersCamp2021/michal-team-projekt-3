@@ -76,6 +76,16 @@ const userSchema = new mongoose.Schema(
       default: '',
       required: false,
     },
+    activateToken: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   { timestamps: true },
 );
