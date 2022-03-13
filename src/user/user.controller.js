@@ -3,6 +3,7 @@ import { User } from './user.model.js';
 import flatten from 'flat';
 import { mailer } from '../helpers/nodemailer.js';
 import { templateGenrator } from '../templateEmail/templateEmail.js';
+import { USER_ROLE } from '../constants.js';
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
@@ -156,4 +157,14 @@ export const resetPassword = async (req, res) => {
   return res.status(200).json({
     message: 'Your password has been successfully changed. You can login now.',
   });
+};
+
+export const setHostRole = async (id) => {
+  try {
+    await User.findByIdAndUpdate(id, {
+      role: USER_ROLE.HOST,
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
 };

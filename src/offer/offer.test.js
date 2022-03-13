@@ -109,14 +109,15 @@ describe('offer endpoints', () => {
     expect(typeof res.body.errors).toBe('object');
   });
 
-  it('should not allow a POST to /offer when unauthorized (insufficient role)', async () => {
+  it('should allow a POST to /offer when authorized (user role)', async () => {
     const res = await request(app)
       .post('/offer')
       .set('Authorization', userToken)
       .send(offerBody);
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(200);
     expect(typeof res.body).toBe('object');
-    expect(typeof res.body.errors).toBe('object');
+    expect(typeof res.body.data).toBe('object');
+    expect(res.body.data).toMatchObject(offerBody);
   });
 
   it('should not allow a POST to /offer with incorrect payload', async () => {
