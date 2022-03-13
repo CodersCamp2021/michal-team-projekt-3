@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import cors from 'cors';
 import morgan from 'morgan';
 import { StartRouter } from './routes/start.js';
 import { OfferRouter } from './offer/offer.router.js';
@@ -8,12 +7,18 @@ import { AuthRouter } from './auth/auth.router.js';
 import { JwtConfig } from './auth/passport.js';
 import { ReservationRouter } from './reservation/reservation.router.js';
 import express from 'express';
+import cors from 'cors';
 import { UserRouter } from './user/user.router.js';
 export const app = express();
 
+const corsOptions = {
+  origin: ['http://localhost:3000'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 app.use(passport.initialize());
 JwtConfig();
-app.use(cors());
 app.use(morgan('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
