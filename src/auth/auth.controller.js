@@ -13,6 +13,7 @@ export const signup = async (req, res) => {
     'Activate your account!',
     'Click the button below to activate your account',
     `${process.env.FE_URL}/active-account?activeIt=${activateToken}`,
+    'Activate Account',
   );
 
   const mailData = {

@@ -120,6 +120,7 @@ export const forgotPassword = async (req, res) => {
     'Reset your password!',
     'Need to reset your password? No problem! Just click the button below and you will be on your way. If you did not make this request, please ignore this email.',
     `${process.env.FE_URL}/reset-password?resetId=${resetToken}`,
+    'Reset Password',
   );
 
   const mailData = {
