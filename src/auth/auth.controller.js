@@ -87,35 +87,23 @@ export const activateAccount = async (req, res) => {
 export const getNewAccessToken = async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
-    res.status(401).json({
-      errors: [
-        {
-          message: 'Token not found',
-        },
-      ],
-    });
+    res.status(401).json({ message: 'Token not found', errors: [] });
   }
   try {
     const { id } = verifyToken(refreshToken);
     const user = await User.findById(id);
     if (user.refreshToken !== refreshToken) {
       res.status(403).json({
-        errors: [
-          {
-            message: 'Invalid refresh token',
-          },
-        ],
+        message: 'Invalid refresh token',
+        errors: [],
       });
     }
     const token = createToken(id, '5m');
     res.json({ token: `Bearer ${token}` });
   } catch (err) {
     res.status(403).json({
-      errors: [
-        {
-          message: 'Invalid refresh token',
-        },
-      ],
+      message: 'Invalid refresh token',
+      errors: [],
     });
   }
 };
