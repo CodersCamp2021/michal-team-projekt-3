@@ -134,7 +134,7 @@ export const forgotPassword = async (req, res) => {
     await mailer.sendMail(mailData);
     return res
       .status(200)
-      .json({ message: 'Email has been sent, fallow the instructions!' });
+      .json({ message: 'Email has been sent, follow the instructions!' });
   } catch (error) {
     return res
       .status(400)
