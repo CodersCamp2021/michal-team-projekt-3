@@ -1,4 +1,4 @@
-export const templateGenrator = (title, desc, link, btnTxT) => {
+export const templateEmailWithoutButton = (title, desc) => {
   return `
   <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
   style="@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap); font-family: 'Open Sans', sans-serif;">
@@ -31,9 +31,6 @@ export const templateGenrator = (title, desc, link, btnTxT) => {
                   <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
                     ${desc}
                   </p>
-                  <a href="${link}" style="background:#2CCCC3;text-decoration:none; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;">
-                    ${btnTxT}
-                  </a>
                 </td>
               </tr>
               <tr>

@@ -1,7 +1,8 @@
 import { mailer } from '../helpers/nodemailer.js';
-import { templateGenrator } from '../templateEmail/templateEmail.js';
+import { templateEmailWithButton } from '../Email/templateEmailWithButton.js';
 import { User } from '../user/user.model.js';
 import { createToken, verifyToken } from './jwt.service.js';
+import { createEmailDataObject } from '../Email/createEmailDataObject.js';
 
 export const signup = async (req, res) => {
   const user = await new User(req.body);
@@ -9,19 +10,18 @@ export const signup = async (req, res) => {
   const activateToken = createToken(user._id, '8h');
   await user.updateOne({ activateToken: activateToken });
 
-  const htmlTemplate = templateGenrator(
+  const htmlTemplate = templateEmailWithButton(
     'Activate your account!',
     'Click the button below to activate your account',
     `${process.env.FE_URL}/active-account?activeIt=${activateToken}`,
     'Activate Account',
   );
 
-  const mailData = {
-    from: `"Bking" <noreply.bking@gmail.com>`,
-    to: req.body.email,
-    subject: 'Activate your account',
-    html: htmlTemplate,
-  };
+  const mailData = createEmailDataObject(
+    req.body.email,
+    'Activate your account',
+    htmlTemplate,
+  );
 
   try {
     await mailer.sendMail(mailData);
