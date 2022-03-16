@@ -1,10 +1,87 @@
 import { Offer } from './offer.model.js';
 import flatten from 'flat';
+import axios from 'axios';
 import { USER_ROLE } from '../constants.js';
 import { setHostRole } from '../user/user.controller.js';
 
 export const getMany = async (req, res) => {
-  const offers = await Offer.find({});
+  const filters = {};
+  if (req.params.localisation) {
+    try {
+      const response = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.params.localisation}.json?&types=place&access_token=${process.env.REACT_APP_MAP_ACCESS_TOKEN}`,
+      );
+      if (response.ok) {
+        const searchBoundingBox = (await response.json()).features[0].bbox;
+        Object.assign(filters, {
+          localisation: {
+            longitude: {
+              $gte: searchBoundingBox[0],
+              $lte: searchBoundingBox[2],
+            },
+            latitude: {
+              $gte: searchBoundingBox[1],
+              $lte: searchBoundingBox[3],
+            },
+          },
+        });
+      } else
+        return res
+          .status(500)
+          .json({ message: 'Wrong MapBox response code', errors: [] });
+    } catch (e) {
+      return res
+        .status(500)
+        .json({ message: 'MapBox request fail', errors: [] });
+    }
+  }
+
+  req.params.minPrice &&
+    Object.assign(filters, { price: { $gte: req.params.minPrice } });
+  req.params.maxPrice &&
+    Object.assign(filters, { price: { $lte: req.params.maxPrice } });
+  req.params.accomodationTypes &&
+    Object.assign(filters, {
+      accomodationType: { $in: req.params.accomodationTypes },
+    });
+  req.params.hostLanguages &&
+    Object.assign(filters, {
+      host: { languages: { $in: req.params.hostLanguages } },
+    });
+
+  const offers = await Offer.aggregate([
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'host',
+        foreignField: '_id',
+        as: 'host',
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              lastName: 1,
+              email: 1,
+              photo: 1,
+              languages: 1,
+              responseTime: 1,
+              rating: 1,
+              hostFrom: 1,
+              lastOnline: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: '$host',
+    },
+    {
+      $match: filters,
+    },
+  ]);
+
   res.status(200).json({ data: offers });
 };
 

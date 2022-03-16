@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/CodersCamp2021/michal-team-projekt-3#readme",
   "dependencies": {
+    "axios": "^0.26.1",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
