@@ -51,12 +51,17 @@ export const signin = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password' });
     }
-    const token = createToken(user._id);
-    return res
-      .status(201)
-      .json({ message: 'Logged in successfully', token: `Bearer ${token}` });
+    const token = createToken(user._id, '5m');
+    const refreshToken = createToken(user._id, '20m');
+    user.refreshToken = refreshToken;
+    user.save();
+
+    return res.status(201).json({
+      message: 'Logged in successfully',
+      token: `Bearer ${token}`,
+      refreshToken,
+    });
   } catch (error) {
-    console.error(error);
     return res.status(400).json({ errors: [error.message] });
   }
 };
@@ -77,4 +82,34 @@ export const activateAccount = async (req, res) => {
   return res.status(200).json({
     message: 'Your account has been successfully activated. You can login now.',
   });
+};
+
+export const getNewAccessToken = async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    res.status(401).json({ message: 'Token not found', errors: [] });
+  }
+  try {
+    const { id } = verifyToken(refreshToken);
+    const user = await User.findById(id);
+    if (user.refreshToken !== refreshToken) {
+      res.status(403).json({
+        message: 'Invalid refresh token',
+        errors: [],
+      });
+    }
+    const token = createToken(id, '5m');
+    res.json({ token: `Bearer ${token}` });
+  } catch (err) {
+    res.status(403).json({
+      message: 'Invalid refresh token',
+      errors: [],
+    });
+  }
+};
+
+export const signout = async (req, res) => {
+  const user = await User.findOne({ _id: req.user._id });
+  await user.updateOne({ refreshToken: '' });
+  res.sendStatus(204);
 };

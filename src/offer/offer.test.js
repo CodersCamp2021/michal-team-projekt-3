@@ -63,6 +63,12 @@ const adminBody = {
   isActive: true,
 };
 
+jest.mock('nodemailer', () => ({
+  createTransport: jest.fn().mockReturnValue({
+    sendMail: jest.fn().mockReturnValue(() => {}),
+  }),
+}));
+
 let userToken, host1Token, host2Token, adminToken, offerID;
 
 const registerUsers = async () => {
