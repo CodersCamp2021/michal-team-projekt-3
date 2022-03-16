@@ -6,13 +6,13 @@ import { setHostRole } from '../user/user.controller.js';
 
 export const getMany = async (req, res) => {
   const filters = {};
-  if (req.params.localisation) {
+  if (req.query.localisation) {
     try {
       const response = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.params.localisation}.json?&types=place&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.query.localisation}.json?&types=place&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,
       );
-      if (response.ok) {
-        const searchBoundingBox = (await response.json()).features[0].bbox;
+      if (response.status === 200) {
+        const searchBoundingBox = response.data.features[0].bbox;
         Object.assign(filters, {
           localisation: {
             longitude: {
@@ -32,21 +32,21 @@ export const getMany = async (req, res) => {
     } catch (e) {
       return res
         .status(500)
-        .json({ message: 'MapBox request fail', errors: [] });
+        .json({ message: 'MapBox request fail', errors: [e] });
     }
   }
 
-  req.params.minPrice &&
-    Object.assign(filters, { price: { $gte: req.params.minPrice } });
-  req.params.maxPrice &&
-    Object.assign(filters, { price: { $lte: req.params.maxPrice } });
-  req.params.accomodationTypes &&
+  req.query.minPrice &&
+    Object.assign(filters, { price: { $gte: req.query.minPrice } });
+  req.query.maxPrice &&
+    Object.assign(filters, { price: { $lte: req.query.maxPrice } });
+  req.query.accomodationTypes &&
     Object.assign(filters, {
-      accomodationType: { $in: req.params.accomodationTypes },
+      accomodationType: { $in: req.query.accomodationTypes },
     });
-  req.params.hostLanguages &&
+  req.query.hostLanguages &&
     Object.assign(filters, {
-      host: { languages: { $in: req.params.hostLanguages } },
+      host: { languages: { $in: req.query.hostLanguages } },
     });
 
   const offers = await Offer.aggregate([
