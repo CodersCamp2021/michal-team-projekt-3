@@ -9,7 +9,7 @@ export const getMany = async (req, res) => {
   if (req.params.localisation) {
     try {
       const response = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.params.localisation}.json?&types=place&access_token=${process.env.REACT_APP_MAP_ACCESS_TOKEN}`,
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.params.localisation}.json?&types=place&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,
       );
       if (response.ok) {
         const searchBoundingBox = (await response.json()).features[0].bbox;
