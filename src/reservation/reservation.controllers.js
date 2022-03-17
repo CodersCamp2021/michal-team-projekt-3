@@ -1,4 +1,9 @@
+import { mailer } from '../helpers/nodemailer.js';
+import { Offer } from '../offer/offer.model.js';
+import { templateEmailWithoutButton } from '../Email/templateEmailWithoutButton.js';
+import { User } from '../user/user.model.js';
 import { Reservation } from './reservation.model.js';
+import { createEmailDataObject } from '../Email/createEmailDataObject.js';
 
 export async function createReservation(req, res) {
   const reservation = new Reservation({
@@ -11,9 +16,29 @@ export async function createReservation(req, res) {
     contact: req.body.contact,
     price: req.body.price,
   });
+
+  const { host: hostId, title: objTitle } = await Offer.findById(
+    req.body.objectId,
+  );
+  const { email } = await User.findById(hostId);
+
+  const htmlTemplateHost = templateEmailWithoutButton(
+    `Confirmation of reservation at ${objTitle}`,
+    `Your object ${objTitle} has been reserved from ${req.body.dateStart} to ${req.body.dateEnd}`,
+  );
+
+  const mailDataHost = createEmailDataObject(
+    email,
+    'Your object has been reservated.',
+    htmlTemplateHost,
+  );
+
   try {
-    const createdReservation = await reservation.save();
-    res.status(200).json({ data: createdReservation });
+    await reservation.save();
+    await mailer.sendMail(mailDataHost);
+    res.status(200).json({
+      data: 'The object reservation has been successfully completed.',
+    });
   } catch (error) {
     res
       .status(400)
