@@ -4,7 +4,7 @@ export async function createReservation(req, res) {
   const reservation = new Reservation({
     dateStart: req.body.dateStart,
     dateEnd: req.body.dateEnd,
-    object: req.body.objectId,
+    object: req.body.object,
     user: req.user._id,
     message: req.body.message,
     payment: req.body.payment,
