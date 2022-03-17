@@ -18,7 +18,7 @@ export async function createReservation(req, res) {
   });
 
   const { host: hostId, title: objTitle } = await Offer.findById(
-    req.body.objectId,
+    req.body.object,
   );
   const { email } = await User.findById(hostId);
 
