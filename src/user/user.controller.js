@@ -2,8 +2,9 @@ import { createToken, verifyToken } from '../auth/jwt.service.js';
 import { User } from './user.model.js';
 import flatten from 'flat';
 import { mailer } from '../helpers/nodemailer.js';
-import { templateGenrator } from '../templateEmail/templateEmail.js';
+import { templateEmailWithButton } from '../Email/templateEmailWithButton.js';
 import { USER_ROLE } from '../constants.js';
+import { createEmailDataObject } from '../Email/createEmailDataObject.js';
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
@@ -116,19 +117,18 @@ export const forgotPassword = async (req, res) => {
   const resetToken = createToken(user._id, '15m');
   await user.updateOne({ resetToken: resetToken });
 
-  const htmlTemplate = templateGenrator(
+  const htmlTemplate = templateEmailWithButton(
     'Reset your password!',
     'Need to reset your password? No problem! Just click the button below and you will be on your way. If you did not make this request, please ignore this email.',
     `${process.env.FE_URL}/reset-password?resetId=${resetToken}`,
     'Reset Password',
   );
 
-  const mailData = {
-    from: `"Bking" <noreply.bking@gmail.com>`,
-    to: email,
-    subject: 'Reset your password',
-    html: htmlTemplate,
-  };
+  const mailData = createEmailDataObject(
+    email,
+    'Reset your password',
+    htmlTemplate,
+  );
 
   try {
     await mailer.sendMail(mailData);
