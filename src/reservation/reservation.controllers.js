@@ -17,9 +17,11 @@ export async function createReservation(req, res) {
     price: req.body.price,
   });
 
-  const { host: hostId, title: objTitle } = await Offer.findById(
-    req.body.object,
-  );
+  const {
+    host: hostId,
+    title: objTitle,
+    localisation: { address: objAddress },
+  } = await Offer.findById(req.body.object);
   const { email } = await User.findById(hostId);
 
   const htmlTemplateHost = templateEmailWithoutButton(
@@ -33,9 +35,21 @@ export async function createReservation(req, res) {
     htmlTemplateHost,
   );
 
+  const htmlTemplateClient = templateEmailWithoutButton(
+    `Confirmation of your reservation at ${objTitle}`,
+    `Your reservation of the property ${objTitle}  at ${objAddress} from ${req.body.dateStart} to ${req.body.dateEnd} has been confirmed. We wish you a pleasant stay!`,
+  );
+
+  const mailDataClient = createEmailDataObject(
+    req.user.email,
+    'You have reserved an object.',
+    htmlTemplateClient,
+  );
+
   try {
     await reservation.save();
     await mailer.sendMail(mailDataHost);
+    await mailer.sendMail(mailDataClient);
     res.status(200).json({
       data: 'The object reservation has been successfully completed.',
     });
