@@ -13,7 +13,7 @@ export const signup = async (req, res) => {
   const htmlTemplate = templateEmailWithButton(
     'Activate your account!',
     'Click the button below to activate your account',
-    `${process.env.FE_URL}/active-account?activeIt=${activateToken}`,
+    `${process.env.FE_URL}/activate-account?activeIt=${activateToken}`,
     'Activate Account',
   );
 
@@ -71,7 +71,7 @@ export const activateAccount = async (req, res) => {
 
   const isCorrectToken = verifyToken(activateToken);
   if (!isCorrectToken) {
-    return res.status(401).json({ message: 'Your token is expired.' });
+    return res.status(422).json({ message: 'Your token is expired.' });
   }
 
   const user = await User.findOne({ activateToken });
@@ -80,6 +80,7 @@ export const activateAccount = async (req, res) => {
   }
   await user.updateOne({ isActive: true, activateToken: '' });
   return res.status(200).json({
+    isActive: true,
     message: 'Your account has been successfully activated. You can login now.',
   });
 };
@@ -87,21 +88,21 @@ export const activateAccount = async (req, res) => {
 export const getNewAccessToken = async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
-    res.status(401).json({ message: 'Token not found', errors: [] });
+    return res.status(401).json({ message: 'Token not found', errors: [] });
   }
   try {
     const { id } = verifyToken(refreshToken);
     const user = await User.findById(id);
     if (user.refreshToken !== refreshToken) {
-      res.status(403).json({
+      return res.status(403).json({
         message: 'Invalid refresh token',
         errors: [],
       });
     }
     const token = createToken(id, '5m');
-    res.json({ token: `Bearer ${token}` });
+    return res.status(200).json({ token: `Bearer ${token}` });
   } catch (err) {
-    res.status(403).json({
+    return res.status(403).json({
       message: 'Invalid refresh token',
       errors: [],
     });
@@ -111,5 +112,5 @@ export const getNewAccessToken = async (req, res) => {
 export const signout = async (req, res) => {
   const user = await User.findOne({ _id: req.user._id });
   await user.updateOne({ refreshToken: '' });
-  res.sendStatus(204);
+  res.status(204);
 };

@@ -14,6 +14,6 @@ export const AuthRouter = Router();
 
 AuthRouter.post('/register', [registerValidator, verifyFieldsErrors], signup);
 AuthRouter.post('/login', [loginValidator, verifyFieldsErrors], signin);
-AuthRouter.patch('/active-account', activateAccount);
+AuthRouter.patch('/activate-account', activateAccount);
 AuthRouter.post('/token', getNewAccessToken);
 AuthRouter.get('/logout', requireAuth, signout);
