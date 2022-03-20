@@ -14,15 +14,13 @@ export const getMany = async (req, res) => {
       if (response.status === 200) {
         const searchBoundingBox = response.data.features[0].bbox;
         Object.assign(filters, {
-          localisation: {
-            longitude: {
-              $gte: searchBoundingBox[0],
-              $lte: searchBoundingBox[2],
-            },
-            latitude: {
-              $gte: searchBoundingBox[1],
-              $lte: searchBoundingBox[3],
-            },
+          'localisation.longitude': {
+            $gte: searchBoundingBox[0],
+            $lte: searchBoundingBox[2],
+          },
+          'localisation.latitude': {
+            $gte: searchBoundingBox[1],
+            $lte: searchBoundingBox[3],
           },
         });
       } else
@@ -36,17 +34,19 @@ export const getMany = async (req, res) => {
     }
   }
 
+  if (req.query.minPrice || req.query.maxPrice) filters.price = {};
+
   req.query.minPrice &&
-    Object.assign(filters, { price: { $gte: req.query.minPrice } });
+    Object.assign(filters.price, { $gte: parseFloat(req.query.minPrice) });
   req.query.maxPrice &&
-    Object.assign(filters, { price: { $lte: req.query.maxPrice } });
+    Object.assign(filters.price, { $lte: parseFloat(req.query.maxPrice) });
   req.query.accomodationTypes &&
     Object.assign(filters, {
-      accomodationType: { $in: req.query.accomodationTypes },
+      accomodationType: { $in: [].concat(req.query.accomodationTypes) },
     });
   req.query.hostLanguages &&
     Object.assign(filters, {
-      host: { languages: { $in: req.query.hostLanguages } },
+      'host.languages': { $in: [].concat(req.query.hostLanguages) },
     });
 
   const offers = await Offer.aggregate([
@@ -82,7 +82,7 @@ export const getMany = async (req, res) => {
     },
   ]);
 
-  res.status(200).json({ data: offers });
+  return res.status(200).json({ data: offers });
 };
 
 export const getOne = async (req, res) => {
@@ -92,9 +92,9 @@ export const getOne = async (req, res) => {
       .json({ message: 'Bad request: no ID param', errors: [] });
   try {
     const offer = await Offer.findById(req.params.id);
-    res.status(200).json({ data: offer });
+    return res.status(200).json({ data: offer });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Could not find offer with the specified ID',
       errors: [error],
     });
@@ -107,10 +107,16 @@ export const updateOne = async (req, res) => {
       .status(400)
       .json({ message: 'Bad request: no ID param', errors: [] });
 
-  const offer = await Offer.findById(req.params.id);
-
-  if (!offer.host.equals(req.user._id) && req.user.role !== USER_ROLE.ADMIN)
-    return res.status(403).json({ message: 'Access denied', errors: [] });
+  try {
+    const offer = await Offer.findById(req.params.id);
+    if (!offer.host.equals(req.user._id) && req.user.role !== USER_ROLE.ADMIN)
+      return res.status(403).json({ message: 'Access denied', errors: [] });
+  } catch (error) {
+    return res.status(400).json({
+      message: 'Could not find offer with the specified ID',
+      errors: [error],
+    });
+  }
 
   try {
     const flattenedBody = flatten(req.body);
@@ -119,9 +125,9 @@ export const updateOne = async (req, res) => {
       flattenedBody,
       { returnDocument: 'after' },
     );
-    res.status(200).json({ data: updatedOffer });
+    return res.status(200).json({ data: updatedOffer });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Could not update offer with the specified ID',
       errors: [error],
     });
@@ -134,16 +140,21 @@ export const removeOne = async (req, res) => {
       .status(400)
       .json({ message: 'Bad request: no ID param', errors: [] });
 
-  const offer = await Offer.findById(req.params.id);
-
-  if (!offer.host.equals(req.user._id) && req.user.role !== USER_ROLE.ADMIN)
-    return res.status(403).json({ message: 'Access denied', errors: [] });
-
+  try {
+    const offer = await Offer.findById(req.params.id);
+    if (!offer.host.equals(req.user._id) && req.user.role !== USER_ROLE.ADMIN)
+      return res.status(403).json({ message: 'Access denied', errors: [] });
+  } catch (error) {
+    return res.status(400).json({
+      message: 'Could not find offer with the specified ID',
+      errors: [error],
+    });
+  }
   try {
     const removedOffer = await Offer.findByIdAndRemove(req.params.id);
-    res.status(200).json({ data: removedOffer });
+    return res.status(200).json({ data: removedOffer });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Could not remove offer with the specified ID',
       errors: [error],
     });
@@ -161,9 +172,9 @@ export const createOne = async (req, res) => {
       ...req.body,
       host: userId,
     });
-    res.status(200).json({ data: createdOffer });
+    return res.status(200).json({ data: createdOffer });
   } catch (error) {
-    res
+    return res
       .status(400)
       .json({ message: 'Could not create offer', errors: [error] });
   }
