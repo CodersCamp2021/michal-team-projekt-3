@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../app.js';
 import { USER_ROLE } from '../constants.js';
-import dbConnection from '../helpers/dbConnection.js';
+import { connect, disconnect } from '../helpers/dbConnection.js';
 
 const offerBody = {
   title: 'Super oferta',
@@ -88,12 +88,12 @@ const registerUsers = async () => {
 
 describe('offer endpoints', () => {
   beforeAll(async () => {
-    await dbConnection.connect();
+    await connect();
     await registerUsers();
   });
 
   afterAll(async () => {
-    await dbConnection.disconnect();
+    await disconnect();
   });
 
   it('should allow a POST to /offer when authorized', async () => {

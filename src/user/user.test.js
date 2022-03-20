@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../app.js';
 import { USER_ROLE } from '../constants.js';
-import dbConnection from '../helpers/dbConnection.js';
+import { connect, disconnect } from '../helpers/dbConnection.js';
 
 const userBody = {
   email: `user@test.pl`,
@@ -60,13 +60,13 @@ jest.mock('nodemailer', () => ({
 
 describe('user endpoints', () => {
   beforeAll(async () => {
-    await dbConnection.connect();
+    await connect();
     await registerUsers();
     await getUsersData(adminToken);
   });
 
   afterAll(async () => {
-    await dbConnection.disconnect();
+    await disconnect();
   });
 
   describe('admin user', () => {
