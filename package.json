@@ -64,6 +64,9 @@
     "coverageReporters": [
       "json",
       "html"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
     ]
   },
   "babel": {
