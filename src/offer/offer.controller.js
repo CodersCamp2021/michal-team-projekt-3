@@ -1,6 +1,6 @@
 import { Offer } from './offer.model.js';
 import flatten from 'flat';
-import axios from 'axios';
+import { getSearchBoundingBox } from '../helpers/mapBox.js';
 import { USER_ROLE } from '../constants.js';
 import { setHostRole } from '../user/user.controller.js';
 
@@ -8,29 +8,24 @@ export const getMany = async (req, res) => {
   const filters = {};
   if (req.query.localisation) {
     try {
-      const response = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.query.localisation}.json?&types=place&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,
+      const searchBoundingBox = await getSearchBoundingBox(
+        req.query.localisation,
       );
-      if (response.status === 200) {
-        const searchBoundingBox = response.data.features[0].bbox;
-        Object.assign(filters, {
-          'localisation.longitude': {
-            $gte: searchBoundingBox[0],
-            $lte: searchBoundingBox[2],
-          },
-          'localisation.latitude': {
-            $gte: searchBoundingBox[1],
-            $lte: searchBoundingBox[3],
-          },
-        });
-      } else
-        return res
-          .status(500)
-          .json({ message: 'Wrong MapBox response code', errors: [] });
+      Object.assign(filters, {
+        'localisation.longitude': {
+          $gte: searchBoundingBox[0],
+          $lte: searchBoundingBox[2],
+        },
+        'localisation.latitude': {
+          $gte: searchBoundingBox[1],
+          $lte: searchBoundingBox[3],
+        },
+      });
     } catch (e) {
-      return res
-        .status(500)
-        .json({ message: 'MapBox request fail', errors: [e] });
+      return res.status(500).json({
+        message: 'Could not get bounding box from MapBox',
+        errors: [e],
+      });
     }
   }
 
