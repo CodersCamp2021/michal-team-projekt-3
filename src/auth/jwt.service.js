@@ -8,8 +8,7 @@ export const createToken = (id, expiresIn = process.env.JWT_EXP) => {
 
 export const verifyToken = (token) => {
   try {
-    jwt.verify(token, process.env.JWT_SECRET);
-    return true;
+    return jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
     return false;
   }

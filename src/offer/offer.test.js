@@ -4,6 +4,12 @@ import { app } from '../app.js';
 import { USER_ROLE, ACCOMODATION_TYPE, LANGUAGE } from '../constants.js';
 import dbConnection from '../helpers/dbConnection.js';
 
+jest.mock('nodemailer', () => ({
+  createTransport: jest.fn().mockReturnValue({
+    sendMail: jest.fn().mockReturnValue(() => {}),
+  }),
+}));
+
 const generateUser = (overrideProps = {}) => {
   const user = {
     email: faker.internet.email(),

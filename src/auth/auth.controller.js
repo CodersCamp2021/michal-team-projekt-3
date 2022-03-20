@@ -1,7 +1,8 @@
 import { mailer } from '../helpers/nodemailer.js';
-import { templateGenrator } from '../templateEmail/templateEmail.js';
+import { templateEmailWithButton } from '../Email/templateEmailWithButton.js';
 import { User } from '../user/user.model.js';
 import { createToken, verifyToken } from './jwt.service.js';
+import { createEmailDataObject } from '../Email/createEmailDataObject.js';
 
 export const signup = async (req, res) => {
   const user = await new User(req.body);
@@ -9,19 +10,18 @@ export const signup = async (req, res) => {
   const activateToken = createToken(user._id, '8h');
   await user.updateOne({ activateToken: activateToken });
 
-  const htmlTemplate = templateGenrator(
+  const htmlTemplate = templateEmailWithButton(
     'Activate your account!',
     'Click the button below to activate your account',
-    `${process.env.FE_URL}/active-account?activeIt=${activateToken}`,
+    `${process.env.FE_URL}/activate-account?activeIt=${activateToken}`,
     'Activate Account',
   );
 
-  const mailData = {
-    from: `"Bking" <noreply.bking@gmail.com>`,
-    to: req.body.email,
-    subject: 'Activate your account',
-    html: htmlTemplate,
-  };
+  const mailData = createEmailDataObject(
+    req.body.email,
+    'Activate your account',
+    htmlTemplate,
+  );
 
   try {
     await mailer.sendMail(mailData);
@@ -51,12 +51,17 @@ export const signin = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password' });
     }
-    const token = createToken(user._id);
-    return res
-      .status(201)
-      .json({ message: 'Logged in successfully', token: `Bearer ${token}` });
+    const token = createToken(user._id, '5m');
+    const refreshToken = createToken(user._id, '20m');
+    user.refreshToken = refreshToken;
+    user.save();
+
+    return res.status(201).json({
+      message: 'Logged in successfully',
+      token: `Bearer ${token}`,
+      refreshToken,
+    });
   } catch (error) {
-    console.error(error);
     return res.status(400).json({ errors: [error.message] });
   }
 };
@@ -66,7 +71,7 @@ export const activateAccount = async (req, res) => {
 
   const isCorrectToken = verifyToken(activateToken);
   if (!isCorrectToken) {
-    return res.status(401).json({ message: 'Your token is expired.' });
+    return res.status(422).json({ message: 'Your token is expired.' });
   }
 
   const user = await User.findOne({ activateToken });
@@ -75,6 +80,37 @@ export const activateAccount = async (req, res) => {
   }
   await user.updateOne({ isActive: true, activateToken: '' });
   return res.status(200).json({
+    isActive: true,
     message: 'Your account has been successfully activated. You can login now.',
   });
+};
+
+export const getNewAccessToken = async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Token not found', errors: [] });
+  }
+  try {
+    const { id } = verifyToken(refreshToken);
+    const user = await User.findById(id);
+    if (user.refreshToken !== refreshToken) {
+      return res.status(403).json({
+        message: 'Invalid refresh token',
+        errors: [],
+      });
+    }
+    const token = createToken(id, '5m');
+    return res.status(200).json({ token: `Bearer ${token}` });
+  } catch (err) {
+    return res.status(403).json({
+      message: 'Invalid refresh token',
+      errors: [],
+    });
+  }
+};
+
+export const signout = async (req, res) => {
+  const user = await User.findOne({ _id: req.user._id });
+  await user.updateOne({ refreshToken: '' });
+  res.status(204);
 };
