@@ -11,8 +11,12 @@ import cors from 'cors';
 import { UserRouter } from './user/user.router.js';
 export const app = express();
 
+const fe_url = new URL(process.env.FE_URL);
+const fe_url_pattern = new RegExp(
+  `^https?://.*${fe_url.host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+);
 const corsOptions = {
-  origin: [process.env.FE_URL],
+  origin: ['http://localhost:3000', fe_url_pattern],
   credentials: true,
 };
 app.use(cors(corsOptions));
