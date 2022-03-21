@@ -2,7 +2,7 @@ import faker from '@faker-js/faker';
 import request from 'supertest';
 import { app } from '../app.js';
 import { USER_ROLE, ACCOMODATION_TYPE, LANGUAGE } from '../constants.js';
-import dbConnection from '../helpers/dbConnection.js';
+import { connect, disconnect } from '../helpers/dbConnection.js';
 
 jest.mock('nodemailer', () => ({
   createTransport: jest.fn().mockReturnValue({
@@ -149,12 +149,12 @@ const registerUsers = async () => {
 
 describe('offer endpoints', () => {
   beforeAll(async () => {
-    await dbConnection.connect();
+    await connect();
     await registerUsers();
   });
 
   afterAll(async () => {
-    await dbConnection.disconnect();
+    await disconnect();
   });
 
   it('should allow a POST to /offer when authorized', async () => {

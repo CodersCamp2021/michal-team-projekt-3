@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { app } from '../app.js';
-import dbConnection from '../helpers/dbConnection.js';
+import { connect, disconnect } from '../helpers/dbConnection.js';
 
 const userBody = {
   email: `example@test.pl`,
@@ -28,10 +28,10 @@ jest.mock('nodemailer', () => ({
 
 describe('auth endpoints', () => {
   beforeAll(async () => {
-    await dbConnection.connect();
+    await connect();
   });
   afterAll(async () => {
-    await dbConnection.disconnect();
+    await disconnect();
   });
 
   it('should allow a POST to /auth/register with correct data', async () => {

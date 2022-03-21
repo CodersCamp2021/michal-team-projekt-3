@@ -1,7 +1,16 @@
-import * as productionDbConnection from './productionDbConnection.js';
-import * as testDbConnection from './testDbConnection.js';
+import mongoose from 'mongoose';
 
-const dbConnection =
-  process.env.NODE_ENV === 'test' ? testDbConnection : productionDbConnection;
+export const connect = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
-export default dbConnection;
+export const disconnect = () => {
+  return mongoose.disconnect();
+};
