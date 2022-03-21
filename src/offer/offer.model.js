@@ -15,7 +15,7 @@ const offerSchema = new mongoose.Schema(
     },
     accomodationType: {
       type: String,
-      required: false,
+      required: true,
     },
     description: {
       type: String,
