@@ -4,18 +4,6 @@ import { app } from '../app.js';
 import { USER_ROLE, ACCOMODATION_TYPE, LANGUAGE } from '../constants.js';
 import { connect, disconnect } from '../helpers/dbConnection.js';
 
-jest.mock('nodemailer', () => ({
-  createTransport: jest.fn().mockReturnValue({
-    sendMail: jest.fn().mockReturnValue(() => {}),
-  }),
-}));
-
-jest.mock('../helpers/mapBox', () => ({
-  getSearchBoundingBox: jest
-    .fn()
-    .mockReturnValue([20.851689, 52.097850137, 21.271150979, 52.368154]),
-}));
-
 const generateUser = (overrideProps = {}) => {
   const user = {
     email: faker.internet.email(),

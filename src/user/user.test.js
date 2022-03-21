@@ -52,12 +52,6 @@ const getUsersData = async (token) => {
   user = users[1];
 };
 
-jest.mock('nodemailer', () => ({
-  createTransport: jest.fn().mockReturnValue({
-    sendMail: jest.fn().mockReturnValue(() => {}),
-  }),
-}));
-
 describe('user endpoints', () => {
   beforeAll(async () => {
     await connect();
