@@ -4,6 +4,8 @@ import { app } from '../app.js';
 import { USER_ROLE, ACCOMODATION_TYPE, LANGUAGE } from '../constants.js';
 import { connect, disconnect } from '../helpers/dbConnection.js';
 
+faker.seed(2137420);
+
 const generateUser = (overrideProps = {}) => {
   const user = {
     email: faker.internet.email(),
@@ -49,7 +51,7 @@ const offers = {
       latitude: 52.27154078468702,
       longitude: 21.01387258304672,
     },
-    price: Math.random() * 100,
+    price: Math.random() * 99.9,
   }),
   price_eq_100: generateOffer({
     localisation: {
@@ -65,7 +67,7 @@ const offers = {
       latitude: 52.3290596476168,
       longitude: 20.95245600249534,
     },
-    price: 100 + Math.random() * 100,
+    price: 100.1 + Math.random() * 100,
   }),
   accomodationType_not_hostel: generateOffer({
     localisation: {
