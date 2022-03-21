@@ -29,4 +29,12 @@ module.exports = {
       { vars: 'all', args: 'after-used', ignoreRestSiblings: true },
     ],
   },
+  overrides: [
+    {
+      files: ['**/__mocks__/*.js'],
+      rules: {
+        'no-unused-vars': 'off',
+      },
+    },
+  ],
 };
