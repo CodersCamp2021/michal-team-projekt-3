@@ -11,12 +11,18 @@ import cors from 'cors';
 import { UserRouter } from './user/user.router.js';
 export const app = express();
 
-const fe_url = new URL(process.env.FE_URL);
-const fe_url_pattern = new RegExp(
-  `^https?://.*${fe_url.host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
-);
+const cors_whitelist = ['http://localhost:3000'];
+
+if (process.env.FE_URL) {
+  const fe_url = new URL(process.env.FE_URL);
+  const fe_url_pattern = new RegExp(
+    `^https?://.*${fe_url.host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+  );
+  cors_whitelist.push(fe_url_pattern);
+}
+
 const corsOptions = {
-  origin: ['http://localhost:3000', fe_url_pattern],
+  origin: cors_whitelist,
   credentials: true,
 };
 app.use(cors(corsOptions));
