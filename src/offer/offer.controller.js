@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Offer } from './offer.model.js';
 import flatten from 'flat';
 import { getSearchBoundingBox } from '../helpers/mapBox.js';
@@ -86,8 +87,41 @@ export const getOne = async (req, res) => {
       .status(400)
       .json({ message: 'Bad request: no ID param', errors: [] });
   try {
-    const offer = await Offer.findById(req.params.id);
-    return res.status(200).json({ data: offer });
+    const offer = await Offer.aggregate([
+      {
+        $match: { _id: mongoose.Types.ObjectId(req.params.id) },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'host',
+          foreignField: '_id',
+          as: 'host',
+          pipeline: [
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                lastName: 1,
+                email: 1,
+                photo: 1,
+                languages: 1,
+                responseTime: 1,
+                rating: 1,
+                hostFrom: 1,
+                lastOnline: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: '$host',
+      },
+    ]);
+    if (offer && offer.length == 1)
+      return res.status(200).json({ data: offer[0] });
+    else throw new Error('Invalid database response');
   } catch (error) {
     return res.status(400).json({
       message: 'Could not find offer with the specified ID',
