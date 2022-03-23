@@ -179,5 +179,27 @@ export const updatePhoto = async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { photo });
   return res.status(200).json({
     message: 'Your photo has been successfully changed',
+  })
+};
+
+export const updatePasswordMe = async (req, res) => {
+  const { password, newPassword } = req.body;
+  const { _id } = req.user;
+
+  const user = await User.findById(_id);
+  const isCorrectOldPassword = await user.comparePassword(password);
+
+  if (!user) {
+    return res.status(400).json({ message: 'User does not exist.' });
+  }
+
+  if (!isCorrectOldPassword) {
+    return res.status(400).json({ message: 'Your old password is incorect.' });
+  }
+
+  await user.updateOne({ password: newPassword });
+
+  return res.status(200).json({
+    message: 'Your password has been successfully changed.',
   });
 };

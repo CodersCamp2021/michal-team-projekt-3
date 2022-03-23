@@ -15,6 +15,7 @@ import {
   forgotPassword,
   resetPassword,
   updatePhoto,
+  updatePasswordMe,
 } from './user.controller.js';
 import { upload } from '../helpers/multer.js';
 
@@ -32,6 +33,11 @@ UserRouter.route('/me')
   .delete(deleteMe);
 
 UserRouter.patch('/photo', upload.single('photo'), updatePhoto);
+
+UserRouter.route('/passwordMe').patch(
+  [userUpdateValidator, verifyFieldsErrors],
+  updatePasswordMe,
+);
 
 UserRouter.use(roleCheck([USER_ROLE.ADMIN]));
 UserRouter.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser);
