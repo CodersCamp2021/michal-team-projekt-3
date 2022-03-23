@@ -172,3 +172,12 @@ export const setHostRole = async (id) => {
     console.error(error.message);
   }
 };
+
+export const updatePhoto = async (req, res) => {
+  if (!req.file) return res.status(400).send('image upload failed.');
+  const photo = req.file.path;
+  await User.findByIdAndUpdate(req.user._id, { photo });
+  return res.status(200).json({
+    message: 'Your photo has been successfully changed',
+  });
+};
