@@ -179,7 +179,7 @@ export const updatePhoto = async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { photo });
   return res.status(200).json({
     message: 'Your photo has been successfully changed',
-  })
+  });
 };
 
 export const updatePasswordMe = async (req, res) => {
