@@ -5,6 +5,7 @@ import { mailer } from '../helpers/nodemailer.js';
 import { templateEmailWithButton } from '../Email/templateEmailWithButton.js';
 import { USER_ROLE } from '../constants.js';
 import { createEmailDataObject } from '../Email/createEmailDataObject.js';
+import bcrypt from 'bcrypt';
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
@@ -168,4 +169,26 @@ export const setHostRole = async (id) => {
   } catch (error) {
     console.error(error.message);
   }
+};
+
+export const updatePasswordMe = async (req, res) => {
+  const { password, newPassword } = req.body;
+  const { _id } = req.user;
+
+  const user = await User.findById(_id);
+  const isCorrectOldPassword = await bcrypt.compare(password, user.password);
+
+  if (!user) {
+    return res.status(400).json({ message: 'User does not exist.' });
+  }
+
+  if (!isCorrectOldPassword) {
+    return res.status(400).json({ message: 'Your old password is incorect.' });
+  }
+
+  await user.updateOne({ password: newPassword });
+
+  return res.status(200).json({
+    message: 'Your password has been successfully changed.',
+  });
 };

@@ -104,6 +104,7 @@ export const userUpdateValidator = [
       'password',
       'photo',
       'languages',
+      'newPassword',
     ];
     for (const key of Object.keys(body)) {
       if (!allowedKeys.includes(key)) {

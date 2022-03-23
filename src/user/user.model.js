@@ -31,6 +31,12 @@ const userSchema = new mongoose.Schema(
       max: 255,
       min: 8,
     },
+    newPassword: {
+      type: String,
+      required: true,
+      max: 255,
+      min: 8,
+    },
     dob: {
       type: Date,
       required: true,
