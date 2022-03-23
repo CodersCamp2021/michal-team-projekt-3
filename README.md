@@ -12,12 +12,13 @@
 <br/>
 **Uczestnik:** [Krystian Gaczyński](https://github.com/krygacz)
 
-**Repozytorium części I projektu, dotyczącej** - [Single Page Applications](https://github.com/CodersCamp2021/michal-team-projekt-2)
+**Repozytorium części I projektu, dotyczącej** (Zintegrowany projekt znajduje się również w tym repozytorium!) - [Single Page Applications](https://github.com/CodersCamp2021/michal-team-projekt-2)
 <br/>
 **Repozytorium części II projektu, dotyczącej** - [Server Side JavaScript](https://github.com/CodersCamp2021/michal-team-projekt-3)
 
-Wersja demonstracyjna aplikacji, jest dotępna pod tym linkiem -> [DEMO]() // DODAĆ
+Wersja demonstracyjna aplikacji, jest dotępna pod tym linkiem -> [DEMO](https://michal-team-projekt-2.netlify.app/)
 
+<br/>
 <br/>
 
 ## Założenia projektowe
@@ -46,3 +47,20 @@ Aplikacja daje użytkownikowi szereg możliwości związanych z wyszukiwaniem of
 <br/><br/>
 
 # Uruchomienie aplikacji
+
+Aplikacje możesz uruchomić poprzez:
+
+```
+1. Stronę internetową: https://michal-team-projekt-2.netlify.app/
+
+```
+
+Lub:
+
+```
+1. Sklonować nasze repozytorium z części 2 https://github.com/CodersCamp2021/michal-team-projekt-2/pull/151/files na swoją maszynę.
+2. Zainstalować zależności za pomocą: npm install
+3. Uzupełnienie wartości pliku .env, pamiętaj żeby w REACT_APP_API_URL=, dodać wartosć serwera postawionego w projekcie 3: bking-api.herokuapp.com/
+4. Wystartować serwer deweloperski poprzez komendę: npm run dev
+
+```
