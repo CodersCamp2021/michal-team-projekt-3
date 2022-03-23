@@ -76,7 +76,10 @@ export const updateMe = async (req, res) => {
       },
     );
     const userData = User.selectFields(updatedUser);
-    res.status(200).json({ data: userData });
+    res.status(200).json({
+      data: userData,
+      message: 'Your account has been successfully updated',
+    });
   } catch (error) {
     return res.status(400).json({ errors: [error.message] });
   }
