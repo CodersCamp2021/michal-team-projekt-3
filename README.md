@@ -48,19 +48,23 @@ Aplikacja daje użytkownikowi szereg możliwości związanych z wyszukiwaniem of
 
 # Uruchomienie aplikacji
 
-Aplikacje możesz uruchomić poprzez:
+Całą aplikację możesz uruchomić poprzez:
 
 ```
-1. Stronę internetową: https://michal-team-projekt-2.netlify.app/
+Stronę internetową: https://michal-team-projekt-2.netlify.app/ - bądź poprzez wykonywanie instrukcji podanych w opisie pierwszej części projektu
+https://github.com/CodersCamp2021/michal-team-projekt-2/pull/151/files
+
 
 ```
 
-Lub:
+Uruchomienie części drugiej projektu (Back-end):
 
 ```
-1. Sklonować nasze repozytorium z części 2 https://github.com/CodersCamp2021/michal-team-projekt-2/pull/151/files na swoją maszynę.
-2. Zainstalować zależności za pomocą: npm install
-3. Uzupełnienie wartości pliku .env, pamiętaj żeby w REACT_APP_API_URL=, dodać wartosć serwera postawionego w projekcie 3: bking-api.herokuapp.com/
-4. Wystartować serwer deweloperski poprzez komendę: npm run dev
+1. Sklonuj nasze repozytorium z drugiej części projektu https://github.com/CodersCamp2021/michal-team-projekt-3
+2. Zainstaluj zależności za pomocą npm install
+3. Stwórz wartości w pliku .env zgodnie z template'm
+4. Do sprawdzenia Back-Endu możesz użyć platformy Postman
+5. Wystartuj serwer za pomocą komendy npm run dev
+
 
 ```
