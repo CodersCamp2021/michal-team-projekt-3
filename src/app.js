@@ -9,6 +9,15 @@ import { ReservationRouter } from './reservation/reservation.router.js';
 import express from 'express';
 import cors from 'cors';
 import { UserRouter } from './user/user.router.js';
+import { MulterRouter } from './helpers/multer/fileupload.router.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
+console.log('directory name to', __dirname);
+
 export const app = express();
 
 const cors_whitelist = ['http://localhost:3000'];
@@ -38,3 +47,5 @@ app.use('/auth', AuthRouter);
 app.use('/reservation', ReservationRouter);
 app.use('/offer', OfferRouter);
 app.use('/user', UserRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/upload', MulterRouter);
