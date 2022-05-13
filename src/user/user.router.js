@@ -16,6 +16,7 @@ import {
   resetPassword,
   updatePasswordMe,
 } from './user.controller.js';
+import { getAllUserReservations } from '../reservation/reservation.controllers.js';
 
 export const UserRouter = Router();
 
@@ -30,6 +31,8 @@ UserRouter.route('/me')
   .get(getMe)
   .patch([userUpdateValidator, verifyFieldsErrors], updateMe)
   .delete(deleteMe);
+
+UserRouter.route('/me/reservations').get(getAllUserReservations);
 
 UserRouter.route('/passwordMe').patch(
   [userUpdateValidator, verifyFieldsErrors],

@@ -102,7 +102,27 @@ export async function getAllUserReservations(req, res) {
     const getAllUserReservations = await Reservation.find({
       user: req.user._id,
     });
-    res.status(200).json({ data: getAllUserReservations });
+    Promise.all(
+      getAllUserReservations.map(async (reservation) => {
+        const {
+          image: objImage,
+          title: objTitle,
+          localisation: { address: objAddress },
+        } = await Offer.findById(res.object);
+
+        return {
+          title: objTitle,
+          address: objAddress,
+          price: reservation.price,
+          checkIn: reservation.dateStart,
+          checkOut: reservation.dateEnd,
+          cancelDate: reservation.cancelDate,
+          image: objImage,
+        };
+      }),
+    ).then((results) => {
+      res.status(200).json({ data: results });
+    });
   } catch (error) {
     res.status(400).json({
       message: 'Could not find reservation for user with this ID',
