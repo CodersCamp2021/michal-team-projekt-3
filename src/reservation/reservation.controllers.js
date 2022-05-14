@@ -108,7 +108,7 @@ export async function getAllUserReservations(req, res) {
           image: objImage,
           title: objTitle,
           localisation: { address: objAddress },
-        } = await Offer.findById(res.object);
+        } = await Offer.findById(reservation.object);
 
         return {
           title: objTitle,
